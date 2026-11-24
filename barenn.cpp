@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <charconv>
 #include <array>
 #include <chrono>
 #include <cmath>
@@ -200,15 +201,38 @@ struct Conjunto {
     const float* imagem(size_t i) const { return &imagens[i * entradas]; }
 };
 
-// Valida e converte uma linha: 64 atributos de 0 a 16, cada um seguido por
-// vírgula, e um rótulo inteiro de 0 a 9. Devolve false se a linha é inválida.
-bool ler_linha(const string& linha, float* imagem, int& rotulo) {
-    istringstream campos(linha);
+// Pula espaços em branco, como o operator>> dos streams.
+const char* pular_espacos(const char* p, const char* fim) {
+    while (p < fim && isspace(static_cast<unsigned char>(*p))) {
+        ++p;
+    }
+    return p;
+}
+
+// Lê um número como o operator>> (espaços antes e sinal '+' opcionais) com
+// std::from_chars, que não usa locale nem aloca memória.
+template <typename T>
+const char* ler_numero(const char* p, const char* fim, T& valor) {
+    p = pular_espacos(p, fim);
+    if (p < fim && *p == '+') {
+        ++p;
+    }
+    const auto [resto, erro] = from_chars(p, fim, valor);
+    return erro == errc{} ? resto : nullptr;
+}
+
+// Valida e converte uma linha [p, fim): 64 atributos de 0 a 16, cada um
+// seguido por vírgula, e um rótulo inteiro de 0 a 9. Devolve false se a
+// linha é inválida.
+bool ler_linha(const char* p, const char* fim, float* imagem, int& rotulo) {
     // Cada atributo deve ser seguido por vírgula, inclusive o último.
     for (int i = 0; i < entradas; ++i) {
         float valor;
-        char separador;
-        if (!(campos >> valor >> separador) || separador != ',' ||
+        if (!(p = ler_numero(p, fim, valor))) {
+            return false;
+        }
+        p = pular_espacos(p, fim);
+        if (p == fim || *p++ != ',' ||
             !isfinite(valor) || valor < 0 || valor > 16) {
             return false;
         }
@@ -216,8 +240,8 @@ bool ler_linha(const string& linha, float* imagem, int& rotulo) {
         imagem[i] = valor / 16.0f;
     }
     // Depois dos atributos, deve restar apenas o rótulo de 0 a 9.
-    return (campos >> rotulo) && rotulo >= 0 && rotulo < classes &&
-           (campos >> ws).eof();
+    return (p = ler_numero(p, fim, rotulo)) && rotulo >= 0 &&
+           rotulo < classes && pular_espacos(p, fim) == fim;
 }
 
 // Lê o arquivo inteiro de uma vez e converte as linhas em paralelo: cada
@@ -250,8 +274,9 @@ Conjunto ler_dados(const string& caminho) {
     long primeira_invalida = linhas;
 #pragma omp parallel for schedule(static) reduction(min : primeira_invalida)
     for (long l = 0; l < linhas; ++l) {
-        const string linha = conteudo.substr(inicios[l], inicios[l + 1] - 1 - inicios[l]);
-        if (!ler_linha(linha, &dados.imagens[l * entradas], dados.rotulos[l])) {
+        const char* linha = conteudo.data() + inicios[l];
+        const char* fim = conteudo.data() + inicios[l + 1] - 1;
+        if (!ler_linha(linha, fim, &dados.imagens[l * entradas], dados.rotulos[l])) {
             primeira_invalida = min(primeira_invalida, l);
         }
     }
