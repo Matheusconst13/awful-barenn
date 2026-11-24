@@ -14,7 +14,7 @@ REPS     ?= 10
 
 all: barenn
 
-barenn: barenn.cpp
+barenn: barenn.cpp comum.hpp
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
 bench: barenn
