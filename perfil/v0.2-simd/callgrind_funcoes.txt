@@ -1,0 +1,79 @@
+--------------------------------------------------------------------------------
+Profile data file '/tmp/tmp.S2wR6B3CpW/callgrind.out' (creator: callgrind-3.18.1)
+--------------------------------------------------------------------------------
+I1 cache: 32768 B, 64 B, 8-way associative
+D1 cache: 49152 B, 64 B, 12-way associative
+LL cache: 25165824 B, 64 B, 12-way associative
+Timerange: Basic block 0 - 137117491
+Trigger: Program termination
+Profiled target:  ./barenn (PID 130240, part 1)
+Events recorded:  Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Events shown:     Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Event sort order: Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Thresholds:       99 0 0 0 0 0 0 0 0
+Include dirs:     
+User annotated:   
+Auto-annotation:  off
+
+--------------------------------------------------------------------------------
+Ir                     Dr                   Dw                   I1mr             D1mr             D1mw            ILmr           DLmr           DLmw            
+--------------------------------------------------------------------------------
+1,344,914,057 (100.0%) 356,733,210 (100.0%) 180,296,911 (100.0%) 115,164 (100.0%) 840,392 (100.0%) 51,352 (100.0%) 3,054 (100.0%) 7,946 (100.0%) 47,509 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                   Dr                   Dw                   I1mr            D1mr             D1mw            ILmr         DLmr           DLmw             file:function
+--------------------------------------------------------------------------------
+908,952,420 (67.58%) 225,002,337 (63.07%) 110,035,000 (61.03%)    159 ( 0.14%) 792,187 (94.26%)    474 ( 0.92%) 156 ( 5.11%)     0             310 ( 0.65%)  barenn.cpp:main [barenn]
+ 64,486,680 ( 4.79%)  13,071,293 ( 3.66%)   7,938,022 ( 4.40%) 17,168 (14.91%)      62 ( 0.01%)     27 ( 0.05%)  31 ( 1.02%)     3 ( 0.04%)      .           ./stdlib/./stdlib/strtod_l.c:____strtof_l_internal [/usr/lib/x86_64-linux-gnu/libc.so.6]
+ 62,144,136 ( 4.62%)  20,008,578 ( 5.61%)  11,658,674 ( 6.47%)     35 ( 0.03%)      50 ( 0.01%)      9 ( 0.02%)  22 ( 0.72%)     .               .           ???:std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::_M_extract_float(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, std::string&) const [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+ 37,766,400 ( 2.81%)  11,150,080 ( 3.13%)   9,711,360 ( 5.39%)  6,187 ( 5.37%)      10 ( 0.00%)      3 ( 0.01%)   8 ( 0.26%)     .               .           ???:std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::do_get(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, float&) const [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+ 35,805,076 ( 2.66%)  14,589,538 ( 4.09%)   4,411,712 ( 2.45%)     14 ( 0.01%)      80 ( 0.01%)      0            5 ( 0.16%)     1 ( 0.01%)      .           ???:std::istream::sentry::sentry(std::istream&, bool) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+ 23,385,401 ( 1.74%)   7,307,827 ( 2.05%)   4,019,258 ( 2.23%)     77 ( 0.07%)     106 ( 0.01%)      6 ( 0.01%)  18 ( 0.59%)     .               .           ./malloc/./malloc/malloc.c:_int_free [/usr/lib/x86_64-linux-gnu/libc.so.6]
+ 16,904,960 ( 1.26%)   6,114,560 ( 1.71%)   3,237,120 ( 1.80%)      5 ( 0.00%)      23 ( 0.00%)      0            3 ( 0.10%)     .               .           ???:std::istream& std::istream::_M_extract<float>(float&) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+ 15,711,439 ( 1.17%)   4,019,196 ( 1.13%)   2,192,215 ( 1.22%)     24 ( 0.02%)     106 ( 0.01%)      0            7 ( 0.23%)     1 ( 0.01%)      .           ./malloc/./malloc/malloc.c:malloc [/usr/lib/x86_64-linux-gnu/libc.so.6]
+ 12,229,120 ( 0.91%)   4,675,840 ( 1.31%)   2,158,080 ( 1.20%)      6 ( 0.01%)       0               0            3 ( 0.10%)     .               .           ???:std::basic_istream<char, std::char_traits<char> >& std::operator>><char, std::char_traits<char> >(std::basic_istream<char, std::char_traits<char> >&, char&) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+ 12,229,120 ( 0.91%)   4,316,160 ( 1.21%)   2,158,080 ( 1.20%)      6 ( 0.01%)      10 ( 0.00%)      9 ( 0.02%)   3 ( 0.10%)     1 ( 0.01%)      .           ???:void std::__convert_to_v<float>(char const*, float&, std::_Ios_Iostate&, __locale_struct* const&) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+ 12,054,900 ( 0.90%)   3,653,000 ( 1.02%)   1,095,900 ( 0.61%)      3 ( 0.00%)       0               0            3 ( 0.10%)     .               .           ???:0x000000000012faf0 [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+ 10,790,400 ( 0.80%)   3,956,480 ( 1.11%)   1,798,400 ( 1.00%)  5,723 ( 4.97%)      10 ( 0.00%)      8 ( 0.02%)   3 ( 0.10%)     1 ( 0.01%)      .           ???:std::string::reserve(unsigned long) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+ 10,373,862 ( 0.77%)   2,489,972 ( 0.70%)   1,840,170 ( 1.02%)     10 ( 0.01%)      10 ( 0.00%)      0            5 ( 0.16%)     1 ( 0.01%)      .           ./stdlib/./stdlib/strtod_l.c:str_to_mpn.constprop.0 [/usr/lib/x86_64-linux-gnu/libc.so.6]
+ 10,120,935 ( 0.75%)   1,840,170 ( 0.52%)   1,288,119 ( 0.71%)     43 ( 0.04%)       0               0            6 ( 0.20%)     .               .           ./stdlib/./stdlib/strtod_l.c:round_and_return [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  8,992,000 ( 0.67%)   2,517,760 ( 0.71%)   2,158,080 ( 1.20%)  5,622 ( 4.88%)       0               8 ( 0.02%)   2 ( 0.07%)     .               .           ???:std::string::_Rep::_M_clone(std::allocator<char> const&, unsigned long) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+  8,038,440 ( 0.60%)   2,923,056 ( 0.82%)   1,461,536 ( 0.81%)     11 ( 0.01%)      66 ( 0.01%)      9 ( 0.02%)   4 ( 0.13%)     .               .           ./malloc/./malloc/malloc.c:free [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  7,672,560 ( 0.57%)   3,288,240 ( 0.92%)   1,826,800 ( 1.01%)      2 ( 0.00%)      33 ( 0.00%)     10 ( 0.02%)   1 ( 0.03%)     .               .           ???:0x000000000012b240 [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+  7,283,627 ( 0.54%)   2,557,132 ( 0.72%)     730,618 ( 0.41%)  5,628 ( 4.89%)      14 ( 0.00%)      1 ( 0.00%)   6 ( 0.20%)     1 ( 0.01%)      1 ( 0.00%)  barenn.cpp:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [barenn]
+  7,193,600 ( 0.53%)     719,360 ( 0.20%)   1,438,720 ( 0.80%)  6,295 ( 5.47%)       0               0            3 ( 0.10%)     .               .           ???:std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+  5,479,500 ( 0.41%)   2,557,100 ( 0.72%)     365,300 ( 0.20%)      3 ( 0.00%)       0               0            1 ( 0.03%)     .               .           ???:0x0000000000103500 [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+  5,036,738 ( 0.37%)     719,534 ( 0.20%)           0           5,623 ( 4.88%)      20 ( 0.00%)      0            1 ( 0.03%)     8 ( 0.10%)      .           ./string/../sysdeps/x86_64/multiarch/strlen-avx2.S:__strlen_avx2 [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  4,384,560 ( 0.33%)     730,760 ( 0.20%)     730,760 ( 0.41%)  5,598 ( 4.86%)       0               0            2 ( 0.07%)     .               .           ???:operator new(unsigned long) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+  3,688,923 ( 0.27%)   1,405,304 ( 0.39%)   1,405,304 ( 0.78%)      2 ( 0.00%)       0               9 ( 0.02%)   2 ( 0.07%)     .               .           ./stdlib/./stdlib/grouping.c:__correctly_grouped_prefixmb [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  3,237,372 ( 0.24%)     719,416 ( 0.20%)     359,708 ( 0.20%)      3 ( 0.00%)      11 ( 0.00%)      0            1 ( 0.03%)     .               .           ???:std::locale::facet::_S_get_c_locale() [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+  2,944,496 ( 0.22%)     368,062 ( 0.10%)     184,031 ( 0.10%)      2 ( 0.00%)       0               0            2 ( 0.07%)     .               .           ./stdlib/../sysdeps/x86_64/lshift.S:__mpn_lshift [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  2,422,173 ( 0.18%)     877,874 ( 0.25%)      52,318 ( 0.03%)     59 ( 0.05%)   7,326 ( 0.87%)     13 ( 0.03%)  59 ( 1.93%)     .               .           barenn.cpp:Barenn::avaliar(Barenn::Rede&, Barenn::Conjunto const&) [barenn]
+  2,395,608 ( 0.18%)     798,536 ( 0.22%)          96 ( 0.00%)      2 ( 0.00%)      29 ( 0.00%)      0            2 ( 0.07%)     4 ( 0.05%)      .           ???:std::locale::id::_M_id() const [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+  2,158,247 ( 0.16%)     719,415 ( 0.20%)           0               2 ( 0.00%)      12 ( 0.00%)      0            1 ( 0.03%)     1 ( 0.01%)      .           ./nptl/./nptl/pthread_once.c:pthread_once@@GLIBC_2.34 [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  2,024,187 ( 0.15%)     368,034 ( 0.10%)           0               2 ( 0.00%)       0               0            1 ( 0.03%)     .               .           ./stdlib/../sysdeps/ieee754/flt-32/mpn2flt.c:__mpn_construct_float [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  1,949,730 ( 0.14%)     389,946 ( 0.11%)   1,364,811 ( 0.76%)      1 ( 0.00%)       0               3 ( 0.01%)   1 ( 0.03%)     .               .           /usr/include/x86_64-linux-gnu/bits/string_fortified.h:main
+  1,885,095 ( 0.14%)   1,654,220 ( 0.46%)   1,631,422 ( 0.90%) 11,959 (10.38%)  24,012 ( 2.86%) 25,002 (48.69%)  13 ( 0.43%)     0          23,547 (49.56%)  ./string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:__memcpy_avx_unaligned_erms [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  1,798,437 ( 0.13%)     719,360 ( 0.20%)     359,680 ( 0.20%)      1 ( 0.00%)       0               0            1 ( 0.03%)     .               .           /usr/include/c++/11/bits/vector.tcc:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  1,656,153 ( 0.12%)     184,017 ( 0.05%)     184,017 ( 0.10%)      .                .               .            .              .               .           ./stdlib/../sysdeps/generic/get-rounding-mode.h:round_and_return
+  1,551,158 ( 0.12%)      44,976 ( 0.01%)     404,654 ( 0.22%)     22 ( 0.02%)      25 ( 0.00%)      2 ( 0.00%)   4 ( 0.13%)     0               2 ( 0.00%)  /usr/include/c++/11/istream:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  1,472,449 ( 0.11%)     736,224 ( 0.21%)           2 ( 0.00%)      2 ( 0.00%)      10 ( 0.00%)      0            2 ( 0.07%)     .               .           ???:0x00000000048fb990 [???]
+  1,472,136 ( 0.11%)           0                    0               4 ( 0.00%)       0               0            2 ( 0.07%)     .               .           ./stdlib/../include/rounding-mode.h:round_and_return
+  1,438,720 ( 0.11%)           0                    0               1 ( 0.00%)       0               0            1 ( 0.03%)     .               .           ./stdlib/./stdlib/strtod_l.c:strtof_l [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  1,096,134 ( 0.08%)           .                    .               .                .               .            .              .               .           ./malloc/./malloc/arena.c:free
+  1,045,400 ( 0.08%)     251,238 ( 0.07%)     228,758 ( 0.13%) 12,062 (10.47%)      10 ( 0.00%)      0           28 ( 0.92%)     .               .           ???:std::istreambuf_iterator<char, std::char_traits<char> > std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::_M_extract_int<long>(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, long&) const [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+  1,022,410 ( 0.08%)     168,923 ( 0.05%)      57,201 ( 0.03%)     25 ( 0.02%)   2,027 ( 0.24%)     26 ( 0.05%)  11 ( 0.36%) 1,691 (21.28%)      5 ( 0.01%)  ./elf/./elf/dl-lookup.c:_dl_lookup_symbol_x [/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2]
+    798,397 ( 0.06%)     399,198 ( 0.11%)           2 ( 0.00%)      3 ( 0.00%)      12 ( 0.00%)      0            2 ( 0.07%)     .               .           ???:0x00000000048f96b0 [???]
+    730,767 ( 0.05%)     365,383 ( 0.10%)           2 ( 0.00%)      3 ( 0.00%)      12 ( 0.00%)      0            2 ( 0.07%)     .               .           ???:0x00000000048f90d0 [???]
+    730,765 ( 0.05%)     365,382 ( 0.10%)           2 ( 0.00%)      4 ( 0.00%)      12 ( 0.00%)      0            2 ( 0.07%)     .               .           ???:0x00000000048f9b30 [???]
+    730,765 ( 0.05%)     365,382 ( 0.10%)           2 ( 0.00%)      3 ( 0.00%)      12 ( 0.00%)      .            .              .               .           ???:0x00000000048f92e0 [???]
+    730,760 ( 0.05%)           0                    0               1 ( 0.00%)       0               0            1 ( 0.03%)     .               .           ???:operator delete(void*) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+    730,619 ( 0.05%)     365,309 ( 0.10%)           2 ( 0.00%)      1 ( 0.00%)      10 ( 0.00%)      .            .              .               .           ???:0x00000000048f8ba0 [???]
+    719,526 ( 0.05%)     359,763 ( 0.10%)           0               3 ( 0.00%)      11 ( 0.00%)      0            1 ( 0.03%)     .               .           ???:0x0000000004ace490 [???]
+    719,421 ( 0.05%)     359,710 ( 0.10%)           2 ( 0.00%)      5 ( 0.00%)      12 ( 0.00%)      0            2 ( 0.07%)     .               .           ???:0x00000000048f9630 [???]
+    719,421 ( 0.05%)     359,710 ( 0.10%)           2 ( 0.00%)      4 ( 0.00%)      13 ( 0.00%)      0            2 ( 0.07%)     .               .           ???:0x00000000048fb2c0 [???]
+    719,365 ( 0.05%)     359,682 ( 0.10%)           2 ( 0.00%)      4 ( 0.00%)       9 ( 0.00%)      0            2 ( 0.07%)     .               .           ???:0x00000000048f8530 [???]
+    719,365 ( 0.05%)     359,682 ( 0.10%)           2 ( 0.00%)      3 ( 0.00%)      10 ( 0.00%)      0            2 ( 0.07%)     .               .           ???:0x00000000048f8390 [???]
+    719,365 ( 0.05%)     359,682 ( 0.10%)           2 ( 0.00%)      3 ( 0.00%)      10 ( 0.00%)      0            2 ( 0.07%)     .               .           ???:0x00000000048f8b00 [???]
+    719,365 ( 0.05%)     359,682 ( 0.10%)           2 ( 0.00%)      3 ( 0.00%)      10 ( 0.00%)      0            2 ( 0.07%)     .               .           ???:0x00000000048fa180 [???]
+

@@ -1,0 +1,17 @@
+# started on Tue Nov 24 15:34:53 2026
+
+
+ Performance counter stats for './barenn' (5 runs):
+
+       409.265.390      cycles                           #    4,486 GHz                         ( +-  0,14% )
+     1.349.057.797      instructions                     #    3,30  insn per cycle              ( +-  0,00% )
+       357.477.523      L1-dcache-loads                  #    3,919 G/sec                       ( +-  0,00% )
+           981.256      L1-dcache-load-misses            #    0,27% of all L1-dcache accesses   ( +-  0,19% )
+            25.112      LLC-loads                        #  275,276 K/sec                       ( +-  2,54% )
+            14.204      LLC-load-misses                  #   56,56% of all LL-cache accesses    ( +-  4,49% )
+       134.241.814      branches                         #    1,472 G/sec                       ( +-  0,00% )
+           609.156      branch-misses                    #    0,45% of all branches             ( +-  0,78% )
+             91,22 msec task-clock                       #    0,994 CPUs utilized               ( +-  0,34% )
+
+          0,091758 +- 0,000300 seconds time elapsed  ( +-  0,33% )
+
