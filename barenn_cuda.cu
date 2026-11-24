@@ -7,7 +7,8 @@
 //   - os valores trocados entre neurônios passam por warp shuffles;
 //   - as camadas 2 e 3 ficam na memória compartilhada, com passo ímpar entre
 //     linhas para não haver conflito de banco;
-//   - a sincronização é só da warp (__syncwarp), sem __syncthreads.
+//   - a sincronização é só da warp (__syncwarp), sem __syncthreads;
+//   - a imagem da próxima amostra é lida antecipadamente (prefetch).
 //
 // Compilar com --fmad=false: sem a fusão a*b+c em FMA, cada soma e cada
 // produto arredondam exatamente como na CPU e os resultados são idênticos
@@ -83,11 +84,15 @@ treinar_kernel(const float* __restrict__ imagens, const int* __restrict__ rotulo
     __syncwarp();
 
     // Cada lane guarda as entradas lane e lane + 32 da imagem atual.
-    float xa, xb;
+    float xa = imagens[lane];
+    float xb = imagens[32 + lane];
     for (int epoca = 0; epoca < epocas; ++epoca) {
         for (int a = 0; a < n; ++a) {
-            xa = imagens[a * entradas + lane];
-            xb = imagens[a * entradas + 32 + lane];
+            // Prefetch: a leitura da próxima imagem fica em voo enquanto a
+            // amostra atual é processada.
+            const int proxima = a + 1 < n ? a + 1 : 0;
+            const float xa_prox = imagens[proxima * entradas + lane];
+            const float xb_prox = imagens[proxima * entradas + 32 + lane];
             const int rotulo = rotulos[a];
 
             // Camada 1: neurônio lane, entradas na ordem do legado.
@@ -175,6 +180,8 @@ treinar_kernel(const float* __restrict__ imagens, const int* __restrict__ rotulo
             // Os pesos de w2 e w3 escritos por uma lane são lidos por outras
             // no forward da próxima amostra.
             __syncwarp();
+            xa = xa_prox;
+            xb = xb_prox;
         }
     }
 
