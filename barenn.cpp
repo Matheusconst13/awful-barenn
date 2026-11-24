@@ -200,43 +200,64 @@ struct Conjunto {
     const float* imagem(size_t i) const { return &imagens[i * entradas]; }
 };
 
+// Valida e converte uma linha: 64 atributos de 0 a 16, cada um seguido por
+// vírgula, e um rótulo inteiro de 0 a 9. Devolve false se a linha é inválida.
+bool ler_linha(const string& linha, float* imagem, int& rotulo) {
+    istringstream campos(linha);
+    // Cada atributo deve ser seguido por vírgula, inclusive o último.
+    for (int i = 0; i < entradas; ++i) {
+        float valor;
+        char separador;
+        if (!(campos >> valor >> separador) || separador != ',' ||
+            !isfinite(valor) || valor < 0 || valor > 16) {
+            return false;
+        }
+        // Converte os valores de [0, 16] para [0, 1].
+        imagem[i] = valor / 16.0f;
+    }
+    // Depois dos atributos, deve restar apenas o rótulo de 0 a 9.
+    return (campos >> rotulo) && rotulo >= 0 && rotulo < classes &&
+           (campos >> ws).eof();
+}
+
+// Lê o arquivo inteiro de uma vez e converte as linhas em paralelo: cada
+// linha é independente e escreve na sua própria posição do Conjunto.
 Conjunto ler_dados(const string& caminho) {
-    ifstream arquivo(caminho);
+    ifstream arquivo(caminho, ios::binary);
     if (!arquivo) {
         throw runtime_error("Não foi possível abrir " + caminho);
     }
-
-    Conjunto dados;
-    string linha;
-    size_t numero_linha = 0;
-    while (getline(arquivo, linha)) {
-        ++numero_linha;
-        istringstream campos(linha);
-        int lidos = 0;
-        // Cada atributo deve ser seguido por vírgula, inclusive o último.
-        for (; lidos < entradas; ++lidos) {
-            float valor;
-            char separador;
-            if (!(campos >> valor >> separador) || separador != ',' ||
-                !isfinite(valor) || valor < 0 || valor > 16) {
-                break;
-            }
-            // Converte os valores de [0, 16] para [0, 1].
-            dados.imagens.push_back(valor / 16.0f);
-        }
-        // Depois dos atributos, deve restar apenas o rótulo de 0 a 9.
-        int rotulo;
-        if (lidos != entradas ||
-            !(campos >> rotulo) ||
-            rotulo < 0 || rotulo >= classes ||
-            !(campos >> ws).eof()) {
-            throw runtime_error(caminho + ":" + to_string(numero_linha) +
-                " — esperados 64 atributos de 0 a 16 e um rótulo inteiro de 0 a 9");
-        }
-        dados.rotulos.push_back(rotulo);
-    }
-    if (arquivo.bad() || dados.rotulos.empty()) {
+    const string conteudo{istreambuf_iterator<char>(arquivo),
+                          istreambuf_iterator<char>()};
+    if (arquivo.bad() || conteudo.empty()) {
         throw runtime_error("Falha de leitura ou arquivo vazio: " + caminho);
+    }
+
+    // Separa as linhas como o getline: por '\n', sem linha extra no final.
+    vector<size_t> inicios;
+    for (size_t pos = 0; pos < conteudo.size();) {
+        inicios.push_back(pos);
+        const size_t fim = conteudo.find('\n', pos);
+        pos = fim == string::npos ? conteudo.size() : fim + 1;
+    }
+    inicios.push_back(conteudo.size() + 1);
+
+    const long linhas = static_cast<long>(inicios.size()) - 1;
+    Conjunto dados;
+    dados.imagens.resize(linhas * entradas);
+    dados.rotulos.resize(linhas);
+    // Como no legado, o erro aponta a primeira linha inválida do arquivo.
+    long primeira_invalida = linhas;
+#pragma omp parallel for schedule(static) reduction(min : primeira_invalida)
+    for (long l = 0; l < linhas; ++l) {
+        const string linha = conteudo.substr(inicios[l], inicios[l + 1] - 1 - inicios[l]);
+        if (!ler_linha(linha, &dados.imagens[l * entradas], dados.rotulos[l])) {
+            primeira_invalida = min(primeira_invalida, l);
+        }
+    }
+    if (primeira_invalida < linhas) {
+        throw runtime_error(caminho + ":" + to_string(primeira_invalida + 1) +
+            " — esperados 64 atributos de 0 a 16 e um rótulo inteiro de 0 a 9");
     }
     return dados;
 }
