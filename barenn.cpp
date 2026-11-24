@@ -46,6 +46,13 @@ private:
     // neurônios sem mudar a ordem em que cada neurônio acumula sua soma.
     v8f weights[IN][blocos] = {};
     v8f bias[blocos] = {};
+    // Cópia dos pesos no layout do legado (neurônio i, entrada j), usada só
+    // pelo gradiente da entrada, que soma sobre os neurônios: assim ele
+    // vetoriza entre entradas. As duas cópias recebem as mesmas operações e
+    // permanecem idênticas.
+    static constexpr int blocos_in = (IN + largura - 1) / largura;
+    static_assert(IN % largura == 0, "IN deve ser múltiplo de 8");
+    v8f weights_lin[OUT][blocos_in] = {};
     // Dados do último forward usados para calcular os gradientes. A entrada
     // não é copiada: ela pertence à amostra ou à camada anterior e continua
     // válida até o Backward da mesma amostra.
@@ -66,6 +73,7 @@ public:
         for (int i = 0; i < OUT; ++i) {
             for (int j = 0; j < IN; ++j) {
                 peso(i, j) = distribution(gen);
+                weights_lin[i][j / largura][j % largura] = peso(i, j);
             }
         }
     }
@@ -109,14 +117,14 @@ public:
 
         // O gradiente da entrada usa os pesos anteriores à atualização.
         if constexpr (GRAD_IN) {
-            for (int j = 0; j < IN; ++j) {
-                float sum = 0;
-                for (int i = 0; i < OUT; ++i) {
-                    sum += delta[i / largura][i % largura] *
-                           weights[j][i / largura][i % largura];
+            v8f sum[blocos_in] = {};
+            for (int i = 0; i < OUT; ++i) {
+                const float d = delta[i / largura][i % largura];
+                for (int b = 0; b < blocos_in; ++b) {
+                    sum[b] += d * weights_lin[i][b];
                 }
-                grad_in[j] = sum;
             }
+            memcpy(grad_in, sum, sizeof(grad_in));
         }
 
         // SGD por amostra. O gradiente do peso é delta vezes a entrada.
@@ -125,6 +133,16 @@ public:
             const float entrada = last_input[j];
             for (int b = 0; b < blocos; ++b) {
                 weights[j][b] -= learning_rate * (delta[b] * entrada);
+            }
+        }
+        if constexpr (GRAD_IN) {
+            v8f entrada[blocos_in];
+            memcpy(entrada, last_input, sizeof(entrada));
+            for (int i = 0; i < OUT; ++i) {
+                const float d = delta[i / largura][i % largura];
+                for (int b = 0; b < blocos_in; ++b) {
+                    weights_lin[i][b] -= learning_rate * (d * entrada[b]);
+                }
             }
         }
         for (int b = 0; b < blocos; ++b) {
