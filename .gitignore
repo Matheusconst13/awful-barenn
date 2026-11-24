@@ -7,3 +7,5 @@ callgrind.out.barenn
 *.ncu-rep
 __pycache__/
 experimentos/omp_intra_amostra
+experimentos/cuda_streams
+experimentos/cuda_modelos

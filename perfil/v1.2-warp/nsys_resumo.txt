@@ -1,0 +1,35 @@
+
+ ** CUDA API Summary (cuda_api_sum):
+
+ Time (%)  Total Time (ns)  Num Calls    Avg (ns)    Med (ns)   Min (ns)   Max (ns)    StdDev (ns)            Name         
+ --------  ---------------  ---------  ------------  ---------  --------  -----------  ------------  ----------------------
+     66,0      211.531.600          7  30.218.800,0  143.438,0     4.099  210.923.576  79.683.344,0  cudaMemcpy            
+     33,0      106.454.320          7  15.207.760,0    5.847,0     2.146  106.310.184  40.172.403,0  cudaFree              
+      0,0          459.507          2     229.753,0  229.753,0    50.428      409.079     253.604,0  cudaLaunchKernel      
+      0,0          284.958          6      47.493,0    6.397,0     2.506      154.250      67.458,0  cudaMalloc            
+      0,0              394          1         394,0      394,0       394          394           0,0  cuModuleGetLoadingMode
+
+
+ ** CUDA GPU Kernel Summary (cuda_gpu_kern_sum):
+
+ Time (%)  Total Time (ns)  Instances    Avg (ns)       Med (ns)      Min (ns)     Max (ns)    StdDev (ns)                                        Name                                      
+ --------  ---------------  ---------  -------------  -------------  -----------  -----------  -----------  --------------------------------------------------------------------------------
+     99,0      210.528.407          1  210.528.407,0  210.528.407,0  210.528.407  210.528.407          0,0  Barenn::treinar_kernel(const float *, const int *, int, float *, float *, float)
+      0,0          156.968          1      156.968,0      156.968,0      156.968      156.968          0,0  Barenn::inferir_kernel(const float *, int, const float *, float *)              
+
+
+ ** CUDA GPU MemOps Summary (by Time) (cuda_gpu_mem_time_sum):
+
+ Time (%)  Total Time (ns)  Count  Avg (ns)  Med (ns)  Min (ns)  Max (ns)  StdDev (ns)           Operation          
+ --------  ---------------  -----  --------  --------  --------  --------  -----------  ----------------------------
+     53,0          247.564      4  61.891,0  33.905,0     1.120   178.633     83.461,0  [CUDA memcpy Host-to-Device]
+     46,0          211.563      3  70.521,0   8.736,0     1.760   201.067    113.109,0  [CUDA memcpy Device-to-Host]
+
+
+ ** CUDA GPU MemOps Summary (by Size) (cuda_gpu_mem_size_sum):
+
+ Total (MB)  Count  Avg (MB)  Med (MB)  Min (MB)  Max (MB)  StdDev (MB)           Operation          
+ ----------  -----  --------  --------  --------  --------  -----------  ----------------------------
+ 1,465           4  0,366     0,238     0,011     0,979     0,459        [CUDA memcpy Host-to-Device]
+ 0,863           3  0,288     0,072     0,011     0,780     0,427        [CUDA memcpy Device-to-Host]
+
