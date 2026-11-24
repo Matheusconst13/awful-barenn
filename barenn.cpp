@@ -60,8 +60,9 @@ public:
         // ordem j = 0, 1, ..., IN - 1, como no legado.
         alignas(64) array<float, OUT> sum = bias;
         for (int j = 0; j < IN; ++j) {
+            const float entrada = input[j];
             for (int i = 0; i < OUT; ++i) {
-                sum[i] += input[j] * weights[j * OUT + i];
+                sum[i] += entrada * weights[j * OUT + i];
             }
         }
         for (int i = 0; i < OUT; ++i) {
@@ -96,9 +97,13 @@ public:
 
         // SGD por amostra. O gradiente do peso é delta vezes a entrada.
         // O gradiente do viés é o próprio delta.
+        // A entrada é lida uma vez por linha: como last_input é um ponteiro
+        // externo, lê-lo dentro do laço impediria a vetorização (o compilador
+        // teria que supor que a escrita nos pesos pode alterá-lo).
         for (int j = 0; j < IN; ++j) {
+            const float entrada = last_input[j];
             for (int i = 0; i < OUT; ++i) {
-                weights[j * OUT + i] -= learning_rate * (delta[i] * last_input[j]);
+                weights[j * OUT + i] -= learning_rate * (delta[i] * entrada);
             }
         }
         for (int i = 0; i < OUT; ++i) {
