@@ -29,4 +29,12 @@ callgrind: barenn
 clean:
 	rm -f barenn callgrind.out.barenn
 
-.PHONY: all bench validate callgrind clean
+.PHONY: all bench validate callgrind clean experimento-omp
+
+# Experimento da issue #7: OpenMP dentro de cada amostra (versão escalar v0.1).
+experimentos/omp_intra_amostra: experimentos/omp_intra_amostra.cpp
+	$(CXX) -std=c++17 -O2 -g -fopenmp -o $@ $<
+
+experimento-omp: experimentos/omp_intra_amostra
+	for t in 1 2 4 8; do echo "threads=$$t"; \
+	  OMP_NUM_THREADS=$$t python3 scripts/bench.py ./$< -n 5 | tail -2; done

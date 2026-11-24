@@ -6,3 +6,4 @@ callgrind.out.barenn
 *.sqlite
 *.ncu-rep
 __pycache__/
+experimentos/omp_intra_amostra
