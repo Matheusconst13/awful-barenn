@@ -5,7 +5,10 @@
 #   make callgrind  -> perfil por função (valgrind --tool=callgrind)
 
 CXX      ?= g++
-CXXFLAGS ?= -std=c++17 -O2 -g
+# -march=x86-64-v3: AVX2 em qualquer x86-64 recente (não só nesta máquina).
+# -ffp-contract=off: proíbe fundir a*b+c em FMA, que arredonda uma vez só e
+# mudaria os resultados em relação ao legado.
+CXXFLAGS ?= -std=c++17 -O3 -march=x86-64-v3 -ffp-contract=off -g
 REPS     ?= 10
 
 all: barenn
