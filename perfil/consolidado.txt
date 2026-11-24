@@ -1,0 +1,22 @@
+# Medição consolidada: cada tag compilada em um git worktree isolado, scripts/bench.py -n 10 (mesma sessão)
+== v0.0-baseline
+treino: media 0.8587 s | desvio 0.0085 s | mediana 0.8572 s | min 0.8485 s | max 0.8731 s
+total : media 0.8913 s | desvio 0.0089 s | mediana 0.8895 s | min 0.8810 s | max 0.9071 s
+== v0.1-sem-copias
+treino: media 0.6011 s | desvio 0.0135 s | mediana 0.5988 s | min 0.5855 s | max 0.6222 s
+total : media 0.6341 s | desvio 0.0141 s | mediana 0.6318 s | min 0.6174 s | max 0.6558 s
+== v0.2-simd
+treino: media 0.0640 s | desvio 0.0009 s | mediana 0.0637 s | min 0.0625 s | max 0.0652 s
+total : media 0.0930 s | desvio 0.0010 s | mediana 0.0927 s | min 0.0912 s | max 0.0944 s
+== v0.3-multicore
+treino: media 0.0637 s | desvio 0.0007 s | mediana 0.0638 s | min 0.0626 s | max 0.0646 s
+total : media 0.0738 s | desvio 0.0113 s | mediana 0.0692 s | min 0.0679 s | max 0.1020 s
+== v1.0-cuda
+treino: media 5.7086 s | desvio 0.1226 s | mediana 5.6816 s | min 5.6070 s | max 6.0303 s
+total : media 5.9001 s | desvio 0.1261 s | mediana 5.8776 s | min 5.7925 s | max 6.2316 s
+== v1.1-persistente
+treino: media 0.3312 s | desvio 0.0001 s | mediana 0.3312 s | min 0.3312 s | max 0.3313 s
+total : media 0.5055 s | desvio 0.0114 s | mediana 0.5083 s | min 0.4892 s | max 0.5265 s
+== v1.2-warp
+treino: media 0.1713 s | desvio 0.0001 s | mediana 0.1713 s | min 0.1713 s | max 0.1716 s
+total : media 0.3400 s | desvio 0.0082 s | mediana 0.3365 s | min 0.3322 s | max 0.3531 s
