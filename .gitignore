@@ -8,3 +8,4 @@ callgrind.out.barenn
 __pycache__/
 experimentos/omp_intra_amostra
 experimentos/cuda_streams
+experimentos/cuda_modelos

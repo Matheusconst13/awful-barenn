@@ -49,7 +49,7 @@ callgrind: barenn
 clean:
 	rm -f barenn barenn_cuda callgrind.out.barenn
 
-.PHONY: all cuda bench validate bench-cuda validate-cuda callgrind clean experimento-omp experimento-streams
+.PHONY: all cuda bench validate bench-cuda validate-cuda callgrind clean experimento-omp experimento-streams experimento-modelos
 
 # Experimento da issue #7: OpenMP dentro de cada amostra (versão escalar v0.1).
 experimentos/omp_intra_amostra: experimentos/omp_intra_amostra.cpp
@@ -67,3 +67,12 @@ experimento-streams: experimentos/cuda_streams barenn_cuda
 	./scripts/validate.sh ./experimentos/cuda_streams
 	for b in ./barenn_cuda ./experimentos/cuda_streams; do \
 	  python3 scripts/bench.py $$b -n $(REPS) | tail -2; done
+
+# Experimento da issue #13: M modelos independentes em paralelo (vazão).
+experimentos/cuda_modelos: experimentos/cuda_modelos.cu comum.hpp
+	$(NVCC) $(NVCCFLAGS) -Xcompiler "$(CXXFLAGS)" -lgomp -o $@ $<
+
+experimento-modelos: experimentos/cuda_modelos
+	./scripts/validate.sh ./experimentos/cuda_modelos
+	for m in 1 30 60 120 240 480 960; do \
+	  BARENN_MODELOS=$$m ./experimentos/cuda_modelos 2>&1 >/dev/null | tail -1; done
