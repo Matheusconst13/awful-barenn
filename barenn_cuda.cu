@@ -1,8 +1,12 @@
-// Barenn na GPU com kernel persistente: um único bloco executa todas as
-// épocas do treino, com pesos, vieses e ativações na memória compartilhada.
-// O SGD por amostra é uma cadeia de dependências (a amostra n + 1 usa os
-// pesos atualizados pela amostra n), então o paralelismo explorado é o de
-// dentro de cada amostra: neurônios, entradas e pesos.
+// Barenn na GPU com kernel persistente de uma única warp. O SGD por amostra
+// é uma cadeia de dependências (a amostra n + 1 usa os pesos atualizados pela
+// amostra n), então o tempo é dominado pela latência de cada passo, não pela
+// vazão. Com 32 threads de uma warp:
+//   - cada lane é dona de um neurônio da camada 1 e guarda os 64 pesos dele
+//     em registradores;
+//   - os valores trocados entre neurônios passam por warp shuffles;
+//   - as camadas 2 e 3 ficam na memória compartilhada;
+//   - a sincronização é só da warp (__syncwarp), sem __syncthreads.
 //
 // Compilar com --fmad=false: sem a fusão a*b+c em FMA, cada soma e cada
 // produto arredondam exatamente como na CPU e os resultados são idênticos
@@ -27,9 +31,6 @@ namespace Barenn {
 // Dimensões da rede 64 -> 32 -> 16 -> 10.
 constexpr int n1 = 32;
 constexpr int n2 = 16;
-constexpr int threads_treino = 512;
-static_assert(threads_treino >= entradas, "uma thread por entrada ao carregar a imagem");
-
 // Parâmetros na memória global, no layout do legado e na ordem do arquivo de
 // validação: w1[32][64], b1, w2[16][32], b2, w3[10][16], b3.
 struct Parametros {
@@ -41,135 +42,157 @@ struct Parametros {
     static constexpr int b3 = w3 + classes * n2;
 };
 
-// Neurônio i soma o viés aos produtos entre entradas e pesos, na ordem do
-// legado. wt é transposto (wt[j * n_out + i]): threads vizinhas leem
-// endereços vizinhos da memória compartilhada, sem conflito de banco.
-template <int n_in, int n_out, bool final>
-__device__ void forward(const float* input, const float* wt, const float* bias,
-                        float* z, float* out) {
-    const int i = threadIdx.x;
-    if (i < n_out) {
-        float sum = bias[i];
-        for (int j = 0; j < n_in; ++j) {
-            sum += input[j] * wt[j * n_out + i];
-        }
-        z[i] = sum;
-        out[i] = final ? sum : (sum > 0.0f ? sum : 0.0f);
+constexpr unsigned warp_inteira = 0xffffffffu;
+// Passo entre as linhas (uma por entrada) dos pesos transpostos na memória
+// compartilhada.
+constexpr int passo2 = n2;
+constexpr int passo3 = classes;
+
+// Treino completo em uma warp. perdas[e * n + a] recebe a perda da amostra a
+// na época e; a média por época é feita no host, em double e na mesma ordem
+// do legado.
+__global__ void __launch_bounds__(32, 1)
+treinar_kernel(const float* __restrict__ imagens, const int* __restrict__ rotulos,
+               int n, float* parametros, float* perdas, float learning_rate) {
+    // w2[j * passo2 + i] liga a entrada j ao neurônio i (idem w3).
+    __shared__ float w2[n1 * passo2];
+    __shared__ float w3[n2 * passo3];
+    const int lane = threadIdx.x;
+    // Neurônio calculado pela lane nas camadas 2 e 3. As lanes sem neurônio
+    // repetem o de outra lane (mesmo endereço, sem conflito) e seus
+    // resultados são ignorados.
+    const int i2 = lane % n2;
+    const int i3 = lane < classes ? lane : 0;
+
+    float w1[entradas];
+#pragma unroll
+    for (int j = 0; j < entradas; ++j) {
+        w1[j] = parametros[Parametros::w1 + lane * entradas + j];
     }
-}
-
-// Gradiente da entrada j: soma, na ordem dos neurônios, delta vezes peso.
-template <int n_in, int n_out>
-__device__ void grad_in(const float* delta, const float* wt, float* grad) {
-    const int j = threadIdx.x;
-    if (j < n_in) {
-        float sum = 0;
-        for (int i = 0; i < n_out; ++i) {
-            sum += delta[i] * wt[j * n_out + i];
-        }
-        grad[j] = sum;
+    float b1 = parametros[Parametros::b1 + lane];
+    float b2 = parametros[Parametros::b2 + i2];
+    float b3 = parametros[Parametros::b3 + i3];
+    for (int k = lane; k < n2 * n1; k += 32) {
+        w2[(k % n1) * passo2 + k / n1] = parametros[Parametros::w2 + k];
     }
-}
-
-// SGD: as threads dividem os pesos da camada (índice k = j * n_out + i).
-template <int n_in, int n_out>
-__device__ void atualizar(const float* delta, const float* input, float* wt,
-                          float* bias, float learning_rate) {
-    for (int k = threadIdx.x; k < n_in * n_out; k += blockDim.x) {
-        const int j = k / n_out;
-        const int i = k % n_out;
-        wt[k] -= learning_rate * (delta[i] * input[j]);
+    for (int k = lane; k < classes * n2; k += 32) {
+        w3[(k % n2) * passo3 + k / n2] = parametros[Parametros::w3 + k];
     }
-    if (threadIdx.x < n_out) {
-        bias[threadIdx.x] -= learning_rate * delta[threadIdx.x];
-    }
-}
+    __syncwarp();
 
-// Delta da camada oculta: o gradiente só passa onde a soma foi positiva.
-__device__ float delta_relu(float grad, float z) {
-    return grad * (z > 0.0f ? 1.0f : 0.0f);
-}
-
-// Copia uma camada entre o layout do legado (global) e o transposto (shared).
-template <int n_in, int n_out, bool para_shared>
-__device__ void copiar_camada(float* global, float* wt) {
-    for (int k = threadIdx.x; k < n_in * n_out; k += blockDim.x) {
-        const int i = k / n_in;
-        const int j = k % n_in;
-        if (para_shared) {
-            wt[j * n_out + i] = global[k];
-        } else {
-            global[k] = wt[j * n_out + i];
-        }
-    }
-}
-
-// Treino completo em um único bloco. perdas[e * n + a] recebe a perda da
-// amostra a na época e; a média por época é feita no host, em double e na
-// mesma ordem do legado.
-__global__ void treinar_kernel(const float* imagens, const int* rotulos, int n,
-                               float* parametros, float* perdas,
-                               float learning_rate) {
-    __shared__ float w1[entradas * n1], b1[n1];
-    __shared__ float w2[n1 * n2], b2[n2];
-    __shared__ float w3[n2 * classes], b3[classes];
-    __shared__ float x[entradas];
-    __shared__ float z1[n1], a1[n1], z2[n2], a2[n2], z3[classes], s[classes];
-    __shared__ float grad[classes], g3[n2], d2[n2], g2[n1], d1[n1];
-
-    copiar_camada<entradas, n1, true>(parametros + Parametros::w1, w1);
-    copiar_camada<n1, n2, true>(parametros + Parametros::w2, w2);
-    copiar_camada<n2, classes, true>(parametros + Parametros::w3, w3);
-    const int t = threadIdx.x;
-    if (t < n1) b1[t] = parametros[Parametros::b1 + t];
-    if (t < n2) b2[t] = parametros[Parametros::b2 + t];
-    if (t < classes) b3[t] = parametros[Parametros::b3 + t];
-    __syncthreads();
-
+    // Cada lane guarda as entradas lane e lane + 32 da imagem atual.
+    float xa, xb;
     for (int epoca = 0; epoca < epocas; ++epoca) {
         for (int a = 0; a < n; ++a) {
-            if (t < entradas) x[t] = imagens[a * entradas + t];
-            __syncthreads();
-            forward<entradas, n1, false>(x, w1, b1, z1, a1);
-            __syncthreads();
-            forward<n1, n2, false>(a1, w2, b2, z2, a2);
-            __syncthreads();
-            forward<n2, classes, true>(a2, w3, b3, z3, s);
-            __syncthreads();
-            // Perda e gradiente, sequenciais como em Barenn::perda.
-            if (t == 0) {
-                const int rotulo = rotulos[a];
-                float total = 0;
-                for (int i = 0; i < classes; ++i) {
-                    const float erro = s[i] - (i == rotulo ? 1.0f : 0.0f);
-                    total += 0.5f * erro * erro;
-                    grad[i] = erro;
-                }
+            xa = imagens[a * entradas + lane];
+            xb = imagens[a * entradas + 32 + lane];
+            const int rotulo = rotulos[a];
+
+            // Camada 1: neurônio lane, entradas na ordem do legado.
+            float z1 = b1;
+#pragma unroll
+            for (int j = 0; j < 32; ++j) {
+                z1 += __shfl_sync(warp_inteira, xa, j) * w1[j];
+            }
+#pragma unroll
+            for (int j = 0; j < 32; ++j) {
+                z1 += __shfl_sync(warp_inteira, xb, j) * w1[32 + j];
+            }
+            const float a1 = z1 > 0.0f ? z1 : 0.0f;
+
+            // Camada 2: neurônio i2.
+            float z2 = b2;
+#pragma unroll
+            for (int j = 0; j < n1; ++j) {
+                z2 += __shfl_sync(warp_inteira, a1, j) * w2[j * passo2 + i2];
+            }
+            const float a2 = z2 > 0.0f ? z2 : 0.0f;
+
+            // Camada 3: neurônio i3, escore linear.
+            float z3 = b3;
+#pragma unroll
+            for (int j = 0; j < n2; ++j) {
+                z3 += __shfl_sync(warp_inteira, a2, j) * w3[j * passo3 + i3];
+            }
+
+            // Perda e gradiente: o erro da classe i fica na lane i e a soma
+            // segue a ordem de Barenn::perda.
+            const float erro = z3 - (lane == rotulo ? 1.0f : 0.0f);
+            float total = 0;
+#pragma unroll
+            for (int i = 0; i < classes; ++i) {
+                const float e = __shfl_sync(warp_inteira, erro, i);
+                total += 0.5f * e * e;
+            }
+            if (lane == 0) {
                 perdas[epoca * n + a] = total;
             }
-            __syncthreads();
-            // Última camada: delta é o próprio gradiente.
-            grad_in<n2, classes>(grad, w3, g3);
-            __syncthreads();
-            atualizar<n2, classes>(grad, a2, w3, b3, learning_rate);
-            if (t < n2) d2[t] = delta_relu(g3[t], z2[t]);
-            __syncthreads();
-            grad_in<n1, n2>(d2, w2, g2);
-            __syncthreads();
-            atualizar<n1, n2>(d2, a1, w2, b2, learning_rate);
-            if (t < n1) d1[t] = delta_relu(g2[t], z1[t]);
-            __syncthreads();
-            atualizar<entradas, n1>(d1, x, w1, b1, learning_rate);
-            __syncthreads();
+
+            // Camada 3: delta é o próprio erro. A lane j (< 16) lê a linha da
+            // entrada j: usa o peso antigo no gradiente e então o atualiza.
+            float g3 = 0;
+#pragma unroll
+            for (int i = 0; i < classes; ++i) {
+                const float d3 = __shfl_sync(warp_inteira, erro, i);
+                float& peso = w3[i2 * passo3 + i];
+                g3 += d3 * peso;
+                if (lane < n2) {
+                    peso -= learning_rate * (d3 * a2);
+                }
+            }
+            if (lane < classes) {
+                b3 -= learning_rate * erro;
+            }
+
+            // Camada 2: a lane j (< 32) cuida da linha da entrada j.
+            const float d2 = g3 * (z2 > 0.0f ? 1.0f : 0.0f);
+            float g2 = 0;
+#pragma unroll
+            for (int i = 0; i < n2; ++i) {
+                const float d = __shfl_sync(warp_inteira, d2, i);
+                float& peso = w2[lane * passo2 + i];
+                g2 += d * peso;
+                peso -= learning_rate * (d * a1);
+            }
+            if (lane < n2) {
+                b2 -= learning_rate * d2;
+            }
+
+            // Camada 1: cada lane atualiza os pesos do seu neurônio.
+            const float d1 = g2 * (z1 > 0.0f ? 1.0f : 0.0f);
+#pragma unroll
+            for (int j = 0; j < 32; ++j) {
+                w1[j] -= learning_rate * (d1 * __shfl_sync(warp_inteira, xa, j));
+            }
+#pragma unroll
+            for (int j = 0; j < 32; ++j) {
+                w1[32 + j] -= learning_rate * (d1 * __shfl_sync(warp_inteira, xb, j));
+            }
+            b1 -= learning_rate * d1;
+
+            // Os pesos de w2 e w3 escritos por uma lane são lidos por outras
+            // no forward da próxima amostra.
+            __syncwarp();
         }
     }
 
-    copiar_camada<entradas, n1, false>(parametros + Parametros::w1, w1);
-    copiar_camada<n1, n2, false>(parametros + Parametros::w2, w2);
-    copiar_camada<n2, classes, false>(parametros + Parametros::w3, w3);
-    if (t < n1) parametros[Parametros::b1 + t] = b1[t];
-    if (t < n2) parametros[Parametros::b2 + t] = b2[t];
-    if (t < classes) parametros[Parametros::b3 + t] = b3[t];
+#pragma unroll
+    for (int j = 0; j < entradas; ++j) {
+        parametros[Parametros::w1 + lane * entradas + j] = w1[j];
+    }
+    parametros[Parametros::b1 + lane] = b1;
+    if (lane < n2) {
+        parametros[Parametros::b2 + lane] = b2;
+    }
+    if (lane < classes) {
+        parametros[Parametros::b3 + lane] = b3;
+    }
+    for (int k = lane; k < n2 * n1; k += 32) {
+        parametros[Parametros::w2 + k] = w2[(k % n1) * passo2 + k / n1];
+    }
+    for (int k = lane; k < classes * n2; k += 32) {
+        parametros[Parametros::w3 + k] = w3[(k % n2) * passo3 + k / n2];
+    }
 }
 
 // Inferência: as imagens de teste são independentes, uma thread por imagem.
@@ -261,7 +284,7 @@ int main(int argc, char** argv) {
         BufferGPU<int> rotulos(treino.rotulos);
         BufferGPU<float> parametros_gpu(parametros);
         BufferGPU<float> perdas_gpu(perdas_amostra.size());
-        treinar_kernel<<<1, threads_treino>>>(imagens.get(), rotulos.get(), n,
+        treinar_kernel<<<1, 32>>>(imagens.get(), rotulos.get(), n,
                                               parametros_gpu.get(),
                                               perdas_gpu.get(), taxa);
         CUDA_CHECK(cudaGetLastError());
