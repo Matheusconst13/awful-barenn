@@ -27,7 +27,7 @@ namespace Barenn {
 // Dimensões da rede 64 -> 32 -> 16 -> 10.
 constexpr int n1 = 32;
 constexpr int n2 = 16;
-constexpr int threads_treino = 64;
+constexpr int threads_treino = 512;
 static_assert(threads_treino >= entradas, "uma thread por entrada ao carregar a imagem");
 
 // Parâmetros na memória global, no layout do legado e na ordem do arquivo de
