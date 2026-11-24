@@ -5,7 +5,8 @@
 //   - cada lane é dona de um neurônio da camada 1 e guarda os 64 pesos dele
 //     em registradores;
 //   - os valores trocados entre neurônios passam por warp shuffles;
-//   - as camadas 2 e 3 ficam na memória compartilhada;
+//   - as camadas 2 e 3 ficam na memória compartilhada, com passo ímpar entre
+//     linhas para não haver conflito de banco;
 //   - a sincronização é só da warp (__syncwarp), sem __syncthreads.
 //
 // Compilar com --fmad=false: sem a fusão a*b+c em FMA, cada soma e cada
@@ -44,9 +45,10 @@ struct Parametros {
 
 constexpr unsigned warp_inteira = 0xffffffffu;
 // Passo entre as linhas (uma por entrada) dos pesos transpostos na memória
-// compartilhada.
-constexpr int passo2 = n2;
-constexpr int passo3 = classes;
+// compartilhada. Com passo ímpar, as 32 lanes acessando a linha da sua
+// entrada caem em 32 bancos distintos.
+constexpr int passo2 = n2 + 1;
+constexpr int passo3 = classes + 1;
 
 // Treino completo em uma warp. perdas[e * n + a] recebe a perda da amostra a
 // na época e; a média por época é feita no host, em double e na mesma ordem
