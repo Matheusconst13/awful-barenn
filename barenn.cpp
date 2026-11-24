@@ -16,6 +16,8 @@
 #include <utility>
 #include <vector>
 
+#include <omp.h>
+
 using namespace std;
 
 namespace Barenn {
@@ -409,6 +411,10 @@ int main(int argc, char** argv) {
         if (filesystem::equivalent(arquivo_treino, arquivo_teste)) {
             throw runtime_error("Use arquivos distintos para treino e teste.");
         }
+        // A leitura é a única região paralela. Sem isto, as threads ociosas
+        // do OpenMP ficam em espera ativa (spin) durante o treino serial,
+        // ocupando núcleos e reduzindo o turbo do núcleo que treina.
+        omp_pause_resource_all(omp_pause_soft);
 
         constexpr int epocas = 51;
         constexpr float taxa = 0.02f;
