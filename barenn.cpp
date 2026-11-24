@@ -3,6 +3,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstdlib>
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
@@ -22,24 +23,39 @@ namespace Barenn {
 constexpr int entradas = 64;
 constexpr int classes = 10;
 
+// Vetor de 8 floats (256 bits, um registrador AVX). As operações entre
+// vetores são elemento a elemento e arredondam como as escalares (IEEE 754).
+typedef float v8f __attribute__((vector_size(32)));
+constexpr int largura = 8;
+
 // Camada densa com dimensões conhecidas em tempo de compilação: os laços têm
-// contagem fixa e o compilador pode desenrolá-los e vetorizá-los.
+// contagem fixa e o compilador pode desenrolá-los e manter os acumuladores
+// em registradores.
 template <int IN, int OUT, bool FINAL = false>
 class DenseLayer {
-    // weights[j * OUT + i] liga a entrada j ao neurônio de saída i. No layout
-    // transposto os pesos de uma mesma entrada ficam contíguos para todos os
-    // neurônios, então o forward vetoriza entre neurônios sem mudar a ordem
-    // em que cada neurônio acumula sua soma.
-    alignas(64) array<float, IN * OUT> weights;
-    alignas(64) array<float, OUT> bias{};
+public:
+    // Neurônios agrupados em blocos de 8. Se OUT não for múltiplo de 8, os
+    // neurônios extras têm pesos e viés zero e seus valores nunca são lidos.
+    static constexpr int blocos = (OUT + largura - 1) / largura;
+    static constexpr int saidas = blocos * largura;
+
+private:
+    // weights[j][b] guarda os pesos da entrada j para os neurônios
+    // 8b, ..., 8b + 7. No layout transposto os pesos de uma mesma entrada
+    // ficam contíguos para todos os neurônios, então o forward vetoriza entre
+    // neurônios sem mudar a ordem em que cada neurônio acumula sua soma.
+    v8f weights[IN][blocos] = {};
+    v8f bias[blocos] = {};
     // Dados do último forward usados para calcular os gradientes. A entrada
     // não é copiada: ela pertence à amostra ou à camada anterior e continua
     // válida até o Backward da mesma amostra.
     const float* last_input = nullptr;
-    alignas(64) array<float, OUT> last_z;
-    alignas(64) array<float, OUT> out;
-    alignas(64) array<float, OUT> delta;
-    alignas(64) array<float, IN> grad_in;
+    v8f last_z[blocos];
+    v8f out[blocos];
+    v8f delta[blocos];
+    alignas(32) float grad_in[IN];
+
+    float& peso(int i, int j) { return weights[j][i / largura][i % largura]; }
 
 public:
     DenseLayer() {
@@ -49,39 +65,46 @@ public:
         uniform_real_distribution<float> distribution(-0.05f, 0.05f);
         for (int i = 0; i < OUT; ++i) {
             for (int j = 0; j < IN; ++j) {
-                weights[j * OUT + i] = distribution(gen);
+                peso(i, j) = distribution(gen);
             }
         }
     }
 
+    // Devolve as saídas da camada (saidas floats, as OUT primeiras válidas).
     const float* Forward(const float* input) {
         last_input = input;
         // Cada neurônio soma o viés aos produtos entre entradas e pesos, na
         // ordem j = 0, 1, ..., IN - 1, como no legado.
-        alignas(64) array<float, OUT> sum = bias;
+        v8f sum[blocos];
+        for (int b = 0; b < blocos; ++b) {
+            sum[b] = bias[b];
+        }
         for (int j = 0; j < IN; ++j) {
             const float entrada = input[j];
-            for (int i = 0; i < OUT; ++i) {
-                sum[i] += entrada * weights[j * OUT + i];
+            for (int b = 0; b < blocos; ++b) {
+                sum[b] += entrada * weights[j][b];
             }
         }
-        for (int i = 0; i < OUT; ++i) {
-            last_z[i] = sum[i];
+        for (int b = 0; b < blocos; ++b) {
+            last_z[b] = sum[b];
             // As camadas ocultas usam ReLU. A última devolve escores lineares.
-            out[i] = FINAL ? sum[i] : max(0.0f, sum[i]);
+            out[b] = FINAL ? sum[b] : (sum[b] > 0.0f ? sum[b] : v8f{});
         }
-        return out.data();
+        return reinterpret_cast<const float*>(out);
     }
 
+    // grad_out deve ter saidas floats, com zero nas posições extras.
     // Com GRAD_IN = false, pula o gradiente da entrada: a primeira camada
     // não tem camada anterior para recebê-lo.
     template <bool GRAD_IN = true>
     const float* Backward(const float* grad_out, float learning_rate) {
         // Delta é o gradiente da perda em relação à soma antes da ativação.
         // Na ReLU, o gradiente passa apenas quando essa soma é positiva.
-        for (int i = 0; i < OUT; ++i) {
-            delta[i] = FINAL ? grad_out[i]
-                             : grad_out[i] * (last_z[i] > 0.0f ? 1.0f : 0.0f);
+        for (int b = 0; b < blocos; ++b) {
+            v8f g;
+            memcpy(&g, grad_out + b * largura, sizeof(g));
+            delta[b] = FINAL ? g
+                             : g * (last_z[b] > 0.0f ? v8f{} + 1.0f : v8f{});
         }
 
         // O gradiente da entrada usa os pesos anteriores à atualização.
@@ -89,7 +112,8 @@ public:
             for (int j = 0; j < IN; ++j) {
                 float sum = 0;
                 for (int i = 0; i < OUT; ++i) {
-                    sum += delta[i] * weights[j * OUT + i];
+                    sum += delta[i / largura][i % largura] *
+                           weights[j][i / largura][i % largura];
                 }
                 grad_in[j] = sum;
             }
@@ -97,19 +121,16 @@ public:
 
         // SGD por amostra. O gradiente do peso é delta vezes a entrada.
         // O gradiente do viés é o próprio delta.
-        // A entrada é lida uma vez por linha: como last_input é um ponteiro
-        // externo, lê-lo dentro do laço impediria a vetorização (o compilador
-        // teria que supor que a escrita nos pesos pode alterá-lo).
         for (int j = 0; j < IN; ++j) {
             const float entrada = last_input[j];
-            for (int i = 0; i < OUT; ++i) {
-                weights[j * OUT + i] -= learning_rate * (delta[i] * entrada);
+            for (int b = 0; b < blocos; ++b) {
+                weights[j][b] -= learning_rate * (delta[b] * entrada);
             }
         }
-        for (int i = 0; i < OUT; ++i) {
-            bias[i] -= learning_rate * delta[i];
+        for (int b = 0; b < blocos; ++b) {
+            bias[b] -= learning_rate * delta[b];
         }
-        return grad_in.data();
+        return grad_in;
     }
 
     // Grava pesos (neurônio a neurônio, como no legado) e vieses em binário
@@ -117,12 +138,14 @@ public:
     void Salvar(ostream& saida) const {
         for (int i = 0; i < OUT; ++i) {
             for (int j = 0; j < IN; ++j) {
-                saida.write(reinterpret_cast<const char*>(&weights[j * OUT + i]),
-                            sizeof(float));
+                const float valor = weights[j][i / largura][i % largura];
+                saida.write(reinterpret_cast<const char*>(&valor), sizeof(valor));
             }
         }
-        saida.write(reinterpret_cast<const char*>(bias.data()),
-                    bias.size() * sizeof(float));
+        for (int i = 0; i < OUT; ++i) {
+            const float valor = bias[i / largura][i % largura];
+            saida.write(reinterpret_cast<const char*>(&valor), sizeof(valor));
+        }
     }
 };
 
@@ -326,7 +349,8 @@ int main(int argc, char** argv) {
         constexpr int epocas = 51;
         constexpr float taxa = 0.02f;
         Barenn::Rede rede;
-        array<float, Barenn::classes> gradiente{};
+        // Escores e gradiente têm as posições extras da última camada (zeradas).
+        alignas(32) array<float, decltype(rede.l3)::saidas> gradiente{};
         array<double, epocas> perdas{};
 
         // A medição inclui forward, perda e backward de todas as épocas.
