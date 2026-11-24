@@ -8,13 +8,13 @@ Medida em uma única sessão: cada tag compilada a partir de um checkout isolado
 
 | Categoria | Versão (tag) | Treino | Speedup treino | Total (processo) | Validação |
 |:--|:--|--:|--:|--:|:--:|
-| **Baseline legado** | [`v0.0-baseline`](../../tree/v0.0-baseline) | 0,859 s ± 0,009 | 1,0x | 0,891 s | bit a bit |
-| CPU | [`v0.1-sem-copias`](../../tree/v0.1-sem-copias) | 0,601 s ± 0,014 | 1,4x | 0,634 s | bit a bit |
-| CPU | [`v0.2-simd`](../../tree/v0.2-simd) | 0,0640 s ± 0,0009 | 13,4x | 0,093 s | bit a bit |
-| **CPU otimizada** | [`v0.3-multicore`](../../tree/v0.3-multicore) | **0,0637 s ± 0,0007** | **13,5x** | **0,069 s** (mediana) | bit a bit |
-| **CUDA inicial** | [`v1.0-cuda`](../../tree/v1.0-cuda) | 5,709 s ± 0,123 | 0,15x | 5,900 s | bit a bit |
-| CUDA | [`v1.1-persistente`](../../tree/v1.1-persistente) | 0,331 s ± 0,000 | 2,6x | 0,506 s | bit a bit |
-| **CUDA otimizado** | [`v1.2-warp`](../../tree/v1.2-warp) | **0,171 s ± 0,000** | **5,0x** | 0,340 s | bit a bit |
+| **Baseline legado** | [`v0.0-baseline`](https://github.com/Matheusconst13/awful-barenn/tree/v0.0-baseline) | 0,859 s ± 0,009 | 1,0x | 0,891 s | bit a bit |
+| CPU | [`v0.1-sem-copias`](https://github.com/Matheusconst13/awful-barenn/tree/v0.1-sem-copias) | 0,601 s ± 0,014 | 1,4x | 0,634 s | bit a bit |
+| CPU | [`v0.2-simd`](https://github.com/Matheusconst13/awful-barenn/tree/v0.2-simd) | 0,0640 s ± 0,0009 | 13,4x | 0,093 s | bit a bit |
+| **CPU otimizada** | [`v0.3-multicore`](https://github.com/Matheusconst13/awful-barenn/tree/v0.3-multicore) | **0,0637 s ± 0,0007** | **13,5x** | **0,069 s** (mediana) | bit a bit |
+| **CUDA inicial** | [`v1.0-cuda`](https://github.com/Matheusconst13/awful-barenn/tree/v1.0-cuda) | 5,709 s ± 0,123 | 0,15x | 5,900 s | bit a bit |
+| CUDA | [`v1.1-persistente`](https://github.com/Matheusconst13/awful-barenn/tree/v1.1-persistente) | 0,331 s ± 0,000 | 2,6x | 0,506 s | bit a bit |
+| **CUDA otimizado** | [`v1.2-warp`](https://github.com/Matheusconst13/awful-barenn/tree/v1.2-warp) | **0,171 s ± 0,000** | **5,0x** | 0,340 s | bit a bit |
 
 Ambiente: Intel i7-11800H (8C/16T, até 4,6 GHz), 16 GB, NVIDIA GeForce RTX 3060 Laptop (GA106, sm_86, 30 SMs, 6 GB), Ubuntu 22.04 (kernel 6.8), GCC 11.4, CUDA 12.9, driver 580.178. Entrada: `optdigits.tra` / `optdigits.tes`. Flags: CPU `-O3 -march=x86-64-v3 -ffp-contract=off -fopenmp`; GPU `nvcc -O3 -arch=sm_86 --fmad=false`. Na GPU o "total" inclui ~0,15 s de criação do contexto CUDA.
 
@@ -22,14 +22,14 @@ Ambiente: Intel i7-11800H (8C/16T, até 4,6 GHz), 16 GB, NVIDIA GeForce RTX 3060
 
 | # | Bloco lógico | Issue (hipótese, medições, discussão) | PR | Tag |
 |:--:|:--|:--|:--|:--|
-| 1 | Baseline reproduzível, validação bit a bit, perf/callgrind | [#1](../../issues/1) | [#2](../../pull/2) | [`v0.0-baseline`](../../tree/v0.0-baseline) |
-| 2 | Sem cópias/alocações e sem o gradiente descartado | [#3](../../issues/3) | [#4](../../pull/4) | [`v0.1-sem-copias`](../../tree/v0.1-sem-copias) |
-| 3 | Layout transposto contíguo + SIMD AVX2 sem reordenar somas | [#5](../../issues/5) | [#6](../../pull/6) | [`v0.2-simd`](../../tree/v0.2-simd) |
-| 4 | Multicore: leitura paralela (OpenMP), `from_chars`; OpenMP no SGD refutado | [#7](../../issues/7) | [#8](../../pull/8) | [`v0.3-multicore`](../../tree/v0.3-multicore) |
-| 5 | Migração funcional para CUDA (porting direto) | [#9](../../issues/9) | [#10](../../pull/10) | [`v1.0-cuda`](../../tree/v1.0-cuda) |
-| 6 | CUDA: kernel persistente + memória compartilhada | [#11](../../issues/11) | [#12](../../pull/12) | [`v1.1-persistente`](../../tree/v1.1-persistente) |
-| 7 | CUDA: 1 warp, registradores, shuffles, padding, prefetch; streams e vazão (experimentos) | [#13](../../issues/13) | [#14](../../pull/14) | [`v1.2-warp`](../../tree/v1.2-warp) |
-| 8 | Este sumário | [#15](../../issues/15) | [#16](../../pull/16) | [`v2.0-relatorio`](../../tree/v2.0-relatorio) |
+| 1 | Baseline reproduzível, validação bit a bit, perf/callgrind | [#1](https://github.com/Matheusconst13/awful-barenn/issues/1) | [#2](https://github.com/Matheusconst13/awful-barenn/pull/2) | [`v0.0-baseline`](https://github.com/Matheusconst13/awful-barenn/tree/v0.0-baseline) |
+| 2 | Sem cópias/alocações e sem o gradiente descartado | [#3](https://github.com/Matheusconst13/awful-barenn/issues/3) | [#4](https://github.com/Matheusconst13/awful-barenn/pull/4) | [`v0.1-sem-copias`](https://github.com/Matheusconst13/awful-barenn/tree/v0.1-sem-copias) |
+| 3 | Layout transposto contíguo + SIMD AVX2 sem reordenar somas | [#5](https://github.com/Matheusconst13/awful-barenn/issues/5) | [#6](https://github.com/Matheusconst13/awful-barenn/pull/6) | [`v0.2-simd`](https://github.com/Matheusconst13/awful-barenn/tree/v0.2-simd) |
+| 4 | Multicore: leitura paralela (OpenMP), `from_chars`; OpenMP no SGD refutado | [#7](https://github.com/Matheusconst13/awful-barenn/issues/7) | [#8](https://github.com/Matheusconst13/awful-barenn/pull/8) | [`v0.3-multicore`](https://github.com/Matheusconst13/awful-barenn/tree/v0.3-multicore) |
+| 5 | Migração funcional para CUDA (porting direto) | [#9](https://github.com/Matheusconst13/awful-barenn/issues/9) | [#10](https://github.com/Matheusconst13/awful-barenn/pull/10) | [`v1.0-cuda`](https://github.com/Matheusconst13/awful-barenn/tree/v1.0-cuda) |
+| 6 | CUDA: kernel persistente + memória compartilhada | [#11](https://github.com/Matheusconst13/awful-barenn/issues/11) | [#12](https://github.com/Matheusconst13/awful-barenn/pull/12) | [`v1.1-persistente`](https://github.com/Matheusconst13/awful-barenn/tree/v1.1-persistente) |
+| 7 | CUDA: 1 warp, registradores, shuffles, padding, prefetch; streams e vazão (experimentos) | [#13](https://github.com/Matheusconst13/awful-barenn/issues/13) | [#14](https://github.com/Matheusconst13/awful-barenn/pull/14) | [`v1.2-warp`](https://github.com/Matheusconst13/awful-barenn/tree/v1.2-warp) |
+| 8 | Este sumário | [#15](https://github.com/Matheusconst13/awful-barenn/issues/15) | [#16](https://github.com/Matheusconst13/awful-barenn/pull/16) | [`v2.0-relatorio`](https://github.com/Matheusconst13/awful-barenn/tree/v2.0-relatorio) |
 
 ## Conclusões de engenharia
 
