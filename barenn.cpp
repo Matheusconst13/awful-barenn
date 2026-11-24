@@ -22,120 +22,153 @@ namespace Barenn {
 constexpr int entradas = 64;
 constexpr int classes = 10;
 
+// Camada densa com dimensões conhecidas em tempo de compilação: os laços têm
+// contagem fixa e o compilador pode desenrolá-los e vetorizá-los.
+template <int IN, int OUT, bool FINAL = false>
 class DenseLayer {
-    int in_features;
-    int out_features;
-    bool final;
-    // weights[i][j] liga a entrada j ao neurônio de saída i.
-    vector<vector<float>> weights;
-    vector<float> bias;
+    // weights[j * OUT + i] liga a entrada j ao neurônio de saída i. No layout
+    // transposto os pesos de uma mesma entrada ficam contíguos para todos os
+    // neurônios, então o forward vetoriza entre neurônios sem mudar a ordem
+    // em que cada neurônio acumula sua soma.
+    alignas(64) array<float, IN * OUT> weights;
+    alignas(64) array<float, OUT> bias{};
     // Dados do último forward usados para calcular os gradientes. A entrada
     // não é copiada: ela pertence à amostra ou à camada anterior e continua
     // válida até o Backward da mesma amostra.
-    const vector<float>* last_input = nullptr;
-    vector<float> last_z;
-    // Buffers reaproveitados entre amostras para evitar alocações.
-    vector<float> out;
-    vector<float> delta;
-    vector<float> grad_in;
+    const float* last_input = nullptr;
+    alignas(64) array<float, OUT> last_z;
+    alignas(64) array<float, OUT> out;
+    alignas(64) array<float, OUT> delta;
+    alignas(64) array<float, IN> grad_in;
 
 public:
-    DenseLayer(int input_size, int output_size, bool is_final = false)
-        : in_features(input_size), out_features(output_size), final(is_final),
-          weights(output_size, vector<float>(input_size)), bias(output_size, 0),
-          last_z(output_size), out(output_size), delta(output_size),
-          grad_in(input_size) {
+    DenseLayer() {
         // A semente fixa torna a inicialização de cada camada reproduzível.
+        // A ordem de sorteio é a do legado: neurônio a neurônio.
         mt19937 gen(1337);
         uniform_real_distribution<float> distribution(-0.05f, 0.05f);
-        for (auto& row : weights) {
-            for (float& weight : row) {
-                weight = distribution(gen);
+        for (int i = 0; i < OUT; ++i) {
+            for (int j = 0; j < IN; ++j) {
+                weights[j * OUT + i] = distribution(gen);
             }
         }
     }
 
-    const vector<float>& Forward(const vector<float>& input) {
-        last_input = &input;
-        // Cada neurônio soma o viés aos produtos entre entradas e pesos.
-        for (int i = 0; i < out_features; ++i) {
-            float sum = bias[i];
-            for (int j = 0; j < in_features; ++j) {
-                sum += input[j] * weights[i][j];
+    const float* Forward(const float* input) {
+        last_input = input;
+        // Cada neurônio soma o viés aos produtos entre entradas e pesos, na
+        // ordem j = 0, 1, ..., IN - 1, como no legado.
+        alignas(64) array<float, OUT> sum = bias;
+        for (int j = 0; j < IN; ++j) {
+            for (int i = 0; i < OUT; ++i) {
+                sum[i] += input[j] * weights[j * OUT + i];
             }
-            last_z[i] = sum;
+        }
+        for (int i = 0; i < OUT; ++i) {
+            last_z[i] = sum[i];
             // As camadas ocultas usam ReLU. A última devolve escores lineares.
-            out[i] = final ? sum : max(0.0f, sum);
+            out[i] = FINAL ? sum[i] : max(0.0f, sum[i]);
         }
-        return out;
+        return out.data();
     }
 
-    // Sem calcular_grad_in, pula o gradiente da entrada: a primeira camada
+    // Com GRAD_IN = false, pula o gradiente da entrada: a primeira camada
     // não tem camada anterior para recebê-lo.
-    const vector<float>& Backward(const vector<float>& grad_out,
-                                  float learning_rate, bool calcular_grad_in = true) {
+    template <bool GRAD_IN = true>
+    const float* Backward(const float* grad_out, float learning_rate) {
         // Delta é o gradiente da perda em relação à soma antes da ativação.
         // Na ReLU, o gradiente passa apenas quando essa soma é positiva.
-        for (int i = 0; i < out_features; ++i) {
-            delta[i] = final ? grad_out[i]
+        for (int i = 0; i < OUT; ++i) {
+            delta[i] = FINAL ? grad_out[i]
                              : grad_out[i] * (last_z[i] > 0.0f ? 1.0f : 0.0f);
         }
 
         // O gradiente da entrada usa os pesos anteriores à atualização.
-        if (calcular_grad_in) {
-            for (int i = 0; i < in_features; ++i) {
+        if constexpr (GRAD_IN) {
+            for (int j = 0; j < IN; ++j) {
                 float sum = 0;
-                for (int j = 0; j < out_features; ++j) {
-                    sum += delta[j] * weights[j][i];
+                for (int i = 0; i < OUT; ++i) {
+                    sum += delta[i] * weights[j * OUT + i];
                 }
-                grad_in[i] = sum;
+                grad_in[j] = sum;
             }
         }
 
         // SGD por amostra. O gradiente do peso é delta vezes a entrada.
         // O gradiente do viés é o próprio delta.
-        const vector<float>& input = *last_input;
-        for (int i = 0; i < out_features; ++i) {
-            for (int j = 0; j < in_features; ++j) {
-                weights[i][j] -= learning_rate * (delta[i] * input[j]);
+        for (int j = 0; j < IN; ++j) {
+            for (int i = 0; i < OUT; ++i) {
+                weights[j * OUT + i] -= learning_rate * (delta[i] * last_input[j]);
             }
+        }
+        for (int i = 0; i < OUT; ++i) {
             bias[i] -= learning_rate * delta[i];
         }
-        return grad_in;
+        return grad_in.data();
     }
 
-    // Grava pesos (linha a linha) e vieses em binário para validar a
-    // corretude bit a bit entre versões.
+    // Grava pesos (neurônio a neurônio, como no legado) e vieses em binário
+    // para validar a corretude bit a bit entre versões.
     void Salvar(ostream& saida) const {
-        for (const auto& row : weights) {
-            saida.write(reinterpret_cast<const char*>(row.data()),
-                        row.size() * sizeof(float));
+        for (int i = 0; i < OUT; ++i) {
+            for (int j = 0; j < IN; ++j) {
+                saida.write(reinterpret_cast<const char*>(&weights[j * OUT + i]),
+                            sizeof(float));
+            }
         }
         saida.write(reinterpret_cast<const char*>(bias.data()),
                     bias.size() * sizeof(float));
     }
 };
 
-struct Amostra {
-    vector<float> imagem;
-    int rotulo;
+// Rede densa com dimensões 64 -> 32 -> 16 -> 10.
+struct Rede {
+    DenseLayer<entradas, 32> l1;
+    DenseLayer<32, 16> l2;
+    DenseLayer<16, classes, true> l3;
+
+    const float* Forward(const float* imagem) {
+        return l3.Forward(l2.Forward(l1.Forward(imagem)));
+    }
+
+    // Propaga o gradiente da última camada até a primeira.
+    // Cada Backward também atualiza os parâmetros da sua camada.
+    void Backward(const float* gradiente, float taxa) {
+        l1.Backward<false>(l2.Backward(l3.Backward(gradiente, taxa), taxa), taxa);
+    }
+
+    void Salvar(ostream& saida) const {
+        l1.Salvar(saida);
+        l2.Salvar(saida);
+        l3.Salvar(saida);
+    }
 };
 
-vector<Amostra> ler_dados(const string& caminho) {
+// Imagens em um único bloco contíguo (amostra i em imagens[i * entradas]),
+// percorrido sequencialmente a cada época.
+struct Conjunto {
+    vector<float> imagens;
+    vector<int> rotulos;
+
+    size_t size() const { return rotulos.size(); }
+    const float* imagem(size_t i) const { return &imagens[i * entradas]; }
+};
+
+Conjunto ler_dados(const string& caminho) {
     ifstream arquivo(caminho);
     if (!arquivo) {
         throw runtime_error("Não foi possível abrir " + caminho);
     }
 
-    vector<Amostra> dados;
+    Conjunto dados;
     string linha;
     size_t numero_linha = 0;
     while (getline(arquivo, linha)) {
         ++numero_linha;
         istringstream campos(linha);
-        Amostra amostra{};
+        int lidos = 0;
         // Cada atributo deve ser seguido por vírgula, inclusive o último.
-        for (int i = 0; i < entradas; ++i) {
+        for (; lidos < entradas; ++lidos) {
             float valor;
             char separador;
             if (!(campos >> valor >> separador) || separador != ',' ||
@@ -143,19 +176,20 @@ vector<Amostra> ler_dados(const string& caminho) {
                 break;
             }
             // Converte os valores de [0, 16] para [0, 1].
-            amostra.imagem.push_back(valor / 16.0f);
+            dados.imagens.push_back(valor / 16.0f);
         }
         // Depois dos atributos, deve restar apenas o rótulo de 0 a 9.
-        if (amostra.imagem.size() != entradas ||
-            !(campos >> amostra.rotulo) ||
-            amostra.rotulo < 0 || amostra.rotulo >= classes ||
+        int rotulo;
+        if (lidos != entradas ||
+            !(campos >> rotulo) ||
+            rotulo < 0 || rotulo >= classes ||
             !(campos >> ws).eof()) {
             throw runtime_error(caminho + ":" + to_string(numero_linha) +
                 " — esperados 64 atributos de 0 a 16 e um rótulo inteiro de 0 a 9");
         }
-        dados.push_back(move(amostra));
+        dados.rotulos.push_back(rotulo);
     }
-    if (arquivo.bad() || dados.empty()) {
+    if (arquivo.bad() || dados.rotulos.empty()) {
         throw runtime_error("Falha de leitura ou arquivo vazio: " + caminho);
     }
     return dados;
@@ -163,21 +197,19 @@ vector<Amostra> ler_dados(const string& caminho) {
 
 // Calcula metade da soma dos erros quadráticos. O alvo vale 1 para a
 // classe correta e 0 para as demais. O erro também é a derivada por escore.
-float perda(const vector<float>& escores, int rotulo,
-            vector<float>* gradiente = nullptr) {
+float perda(const float* escores, int rotulo, float* gradiente = nullptr) {
     float total = 0;
     for (int i = 0; i < classes; ++i) {
         float erro = escores[i] - (i == rotulo ? 1.0f : 0.0f);
         total += 0.5f * erro * erro;
         if (gradiente) {
-            (*gradiente)[i] = erro;
+            gradiente[i] = erro;
         }
     }
     return total;
 }
 
-void avaliar(DenseLayer& l1, DenseLayer& l2, DenseLayer& l3,
-             const vector<Amostra>& teste) {
+void avaliar(Rede& rede, const Conjunto& teste) {
     struct Exemplo {
         size_t linha;
         int real;
@@ -197,15 +229,15 @@ void avaliar(DenseLayer& l1, DenseLayer& l2, DenseLayer& l3,
 
     // Só fazemos forward aqui. Os pesos ficam fixos.
     for (size_t i = 0; i < teste.size(); ++i) {
-        const auto& amostra = teste[i];
-        const auto& escores = l3.Forward(l2.Forward(l1.Forward(amostra.imagem)));
+        const int rotulo = teste.rotulos[i];
+        const float* escores = rede.Forward(teste.imagem(i));
         // O índice do maior escore indica a classe prevista.
         int previsto = static_cast<int>(
-            max_element(escores.begin(), escores.end()) - escores.begin());
-        bool acertou = previsto == amostra.rotulo;
+            max_element(escores, escores + classes) - escores);
+        bool acertou = previsto == rotulo;
         acertos += acertou;
-        ++confusoes[amostra.rotulo][previsto];
-        perda_total += perda(escores, amostra.rotulo);
+        ++confusoes[rotulo][previsto];
+        perda_total += perda(escores, rotulo);
 
         // Guarda até três acertos e três erros para ilustrar a saída.
         // A acurácia usa todas as imagens, inclusive as não exibidas.
@@ -217,7 +249,7 @@ void avaliar(DenseLayer& l1, DenseLayer& l2, DenseLayer& l3,
                     segundo = classe;
                 }
             }
-            exemplos.push_back({i + 1, amostra.rotulo, previsto, segundo,
+            exemplos.push_back({i + 1, rotulo, previsto, segundo,
                                 escores[previsto], escores[segundo]});
             ++exemplos_tipo;
         }
@@ -288,11 +320,8 @@ int main(int argc, char** argv) {
 
         constexpr int epocas = 51;
         constexpr float taxa = 0.02f;
-        // Rede densa com dimensões 64 -> 32 -> 16 -> 10.
-        Barenn::DenseLayer l1(Barenn::entradas, 32);
-        Barenn::DenseLayer l2(32, 16);
-        Barenn::DenseLayer l3(16, Barenn::classes, true);
-        vector<float> gradiente(Barenn::classes);
+        Barenn::Rede rede;
+        array<float, Barenn::classes> gradiente{};
         array<double, epocas> perdas{};
 
         // A medição inclui forward, perda e backward de todas as épocas.
@@ -300,15 +329,11 @@ int main(int argc, char** argv) {
         for (int epoca = 0; epoca < epocas; ++epoca) {
             double perda_total = 0;
             // Uma época percorre todo o conjunto na ordem do arquivo.
-            for (const auto& amostra : treino) {
-                const auto& escores = l3.Forward(l2.Forward(l1.Forward(amostra.imagem)));
-                perda_total += Barenn::perda(escores, amostra.rotulo, &gradiente);
-
-                // Propaga o gradiente da última camada até a primeira.
-                // Cada Backward também atualiza os parâmetros da sua camada.
-                const auto& grad3 = l3.Backward(gradiente, taxa);
-                const auto& grad2 = l2.Backward(grad3, taxa);
-                l1.Backward(grad2, taxa, false);
+            for (size_t i = 0; i < treino.size(); ++i) {
+                const float* escores = rede.Forward(treino.imagem(i));
+                perda_total += Barenn::perda(escores, treino.rotulos[i],
+                                             gradiente.data());
+                rede.Backward(gradiente.data(), taxa);
             }
             perdas[epoca] = perda_total / treino.size();
         }
@@ -326,11 +351,9 @@ int main(int argc, char** argv) {
         // Com BARENN_PESOS definido, grava os parâmetros finais para validação.
         if (const char* caminho = getenv("BARENN_PESOS")) {
             ofstream pesos(caminho, ios::binary);
-            l1.Salvar(pesos);
-            l2.Salvar(pesos);
-            l3.Salvar(pesos);
+            rede.Salvar(pesos);
         }
-        Barenn::avaliar(l1, l2, l3, teste);
+        Barenn::avaliar(rede, teste);
     } catch (const exception& erro) {
         cerr << "Erro: " << erro.what() << "\n";
         return 1;
