@@ -1,0 +1,672 @@
+--------------------------------------------------------------------------------
+Profile data file '/tmp/tmp.slv5ofbvyn/callgrind.out' (creator: callgrind-3.18.1)
+--------------------------------------------------------------------------------
+I1 cache: 32768 B, 64 B, 8-way associative
+D1 cache: 49152 B, 64 B, 12-way associative
+LL cache: 25165824 B, 64 B, 12-way associative
+Timerange: Basic block 0 - 119825230
+Trigger: Program termination
+Profiled target:  ./barenn (PID 133715, part 1)
+Events recorded:  Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Events shown:     Ir Dr D1mr
+Event sort order: Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Thresholds:       99 0 0 0 0 0 0 0 0
+Include dirs:     
+User annotated:   barenn.cpp
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+Ir                     Dr                   D1mr             
+--------------------------------------------------------------------------------
+1,128,404,670 (100.0%) 266,327,994 (100.0%) 866,987 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                   Dr                   D1mr              file:function
+--------------------------------------------------------------------------------
+908,952,422 (80.55%) 225,002,337 (84.48%) 792,188 (91.37%)  barenn.cpp:main [barenn]
+ 80,991,036 ( 7.18%)  11,570,295 ( 4.34%)      77 ( 0.01%)  ???:0x00000000000206b0 [/usr/lib/x86_64-linux-gnu/libgomp.so.1.0.0]
+ 51,050,076 ( 4.52%)   7,995,904 ( 3.00%)  12,728 ( 1.47%)  ???:std::from_chars(char const*, char const*, float&, std::chars_format) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+ 37,641,374 ( 3.34%)   5,377,540 ( 2.02%)     180 ( 0.02%)  ???:0x0000000000020910 [/usr/lib/x86_64-linux-gnu/libgomp.so.1.0.0]
+ 17,523,172 ( 1.55%)   2,585,202 ( 0.97%)     234 ( 0.03%)  barenn.cpp:Barenn::ler_linha(char const*, char const*, float*, int&) [barenn]
+  5,799,218 ( 0.51%)   2,485,563 ( 0.93%)      20 ( 0.00%)  /usr/include/c++/11/streambuf:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  5,798,533 ( 0.51%)   1,656,735 ( 0.62%)       0           /usr/include/c++/11/bits/basic_string.tcc:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  5,074,874 ( 0.45%)   2,899,928 ( 1.09%)      37 ( 0.00%)  ./ctype/./ctype/ctype.c:isspace [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  2,422,173 ( 0.21%)     877,874 ( 0.33%)   7,351 ( 0.85%)  barenn.cpp:Barenn::avaliar(Barenn::Rede&, Barenn::Conjunto const&) [barenn]
+  1,949,730 ( 0.17%)     389,946 ( 0.15%)       0           /usr/include/x86_64-linux-gnu/bits/string_fortified.h:main
+
+--------------------------------------------------------------------------------
+-- Auto-annotated source: /usr/include/c++/11/streambuf
+--------------------------------------------------------------------------------
+Ir                 Dr               D1mr        
+
+-- line 195 ----------------------------------------
+        .                .           .           
+        .                .           .                 /// Current locale setting.
+        .                .           .                 locale 			_M_buf_locale;
+        .                .           .           
+        .                .           .             public:
+        .                .           .                 /// Destructor deallocates no buffer space.
+        .                .           .                 virtual
+        .                .           .                 ~basic_streambuf()
+        8 ( 0.00%)       0           .                 { }
+       20 ( 0.00%)      10 ( 0.00%)  4 ( 0.00%)  => ???:0x000000000010a630 (2x)
+        .                .           .           
+        .                .           .                 // [27.5.2.2.1] locales
+        .                .           .                 /**
+        .                .           .                  *  @brief  Entry point for imbue().
+        .                .           .                  *  @param  __loc  The new locale.
+        .                .           .                  *  @return  The previous locale.
+        .                .           .                  *
+        .                .           .                  *  Calls the derived imbue(__loc).
+-- line 211 ----------------------------------------
+-- line 316 ----------------------------------------
+        .                .           .                  *  If the input read position is available, returns that character
+        .                .           .                  *  and increments the read pointer, otherwise calls and returns
+        .                .           .                  *  @c uflow().
+        .                .           .                 */
+        .                .           .                 int_type
+        .                .           .                 sbumpc()
+        .                .           .                 {
+        .                .           .           	int_type __ret;
+1,656,702 ( 0.15%) 828,351 ( 0.31%)  0           	if (__builtin_expect(this->gptr() < this->egptr(), true))
+        .                .           .           	  {
+        .                .           .           	    __ret = traits_type::to_int_type(*this->gptr());
+        .                .           .           	    this->gbump(1);
+        .                .           .           	  }
+        .                .           .           	else
+        .                .           .           	  __ret = this->uflow();
+        .                .           .           	return __ret;
+        .                .           .                 }
+-- line 332 ----------------------------------------
+-- line 338 ----------------------------------------
+        .                .           .                  *  If the input read position is available, returns that character,
+        .                .           .                  *  otherwise calls and returns @c underflow().  Does not move the
+        .                .           .                  *  read position after fetching the character.
+        .                .           .                 */
+        .                .           .                 int_type
+        .                .           .                 sgetc()
+        .                .           .                 {
+        .                .           .           	int_type __ret;
+1,657,010 ( 0.15%) 828,520 ( 0.31%)  .           	if (__builtin_expect(this->gptr() < this->egptr(), true))
+        .                .           .           	  __ret = traits_type::to_int_type(*this->gptr());
+        .                .           .           	else
+      312 ( 0.00%)     208 ( 0.00%) 11 ( 0.00%)  	  __ret = this->underflow();
+   17,301 ( 0.00%)   5,495 ( 0.00%) 163 ( 0.02%)  => ???:std::basic_filebuf<char, std::char_traits<char> >::underflow() (104x)
+        .                .           .           	return __ret;
+        .                .           .                 }
+        .                .           .           
+        .                .           .                 /**
+        .                .           .                  *  @brief  Entry point for xsgetn.
+        .                .           .                  *  @param  __s  A buffer area.
+        .                .           .                  *  @param  __n  A count.
+        .                .           .                  *
+-- line 357 ----------------------------------------
+-- line 482 ----------------------------------------
+        .                .           .                  *  - eback() returns the beginning pointer for the input sequence
+        .                .           .                  *  - gptr() returns the next pointer for the input sequence
+        .                .           .                  *  - egptr() returns the end pointer for the input sequence
+        .                .           .                 */
+        .                .           .                 char_type*
+        .                .           .                 eback() const { return _M_in_beg; }
+        .                .           .           
+        .                .           .                 char_type*
+  828,484 ( 0.07%) 828,484 ( 0.31%)  9 ( 0.00%)        gptr()  const { return _M_in_cur;  }
+        .                .           .           
+        .                .           .                 char_type*
+        .                .           .                 egptr() const { return _M_in_end; }
+        .                .           .                 ///@}
+        .                .           .           
+        .                .           .                 /**
+        .                .           .                  *  @brief  Moving the read position.
+        .                .           .                  *  @param  __n  The delta by which to move.
+        .                .           .                  *
+        .                .           .                  *  This just advances the read position without returning any data.
+        .                .           .                 */
+        .                .           .                 void
+1,656,702 ( 0.15%)       0           .                 gbump(int __n) { _M_in_cur += __n; }
+        .                .           .           
+        .                .           .                 /**
+        .                .           .                  *  @brief  Setting the three read area pointers.
+        .                .           .                  *  @param  __gbeg  A pointer.
+        .                .           .                  *  @param  __gnext  A pointer.
+        .                .           .                  *  @param  __gend  A pointer.
+        .                .           .                  *  @post  @a __gbeg == @c eback(), @a __gnext == @c gptr(), and
+        .                .           .                  *         @a __gend == @c egptr()
+-- line 511 ----------------------------------------
+
+--------------------------------------------------------------------------------
+-- Auto-annotated source: /usr/include/x86_64-linux-gnu/bits/string_fortified.h
+--------------------------------------------------------------------------------
+Ir                 Dr               D1mr       
+
+-- line 21 ----------------------------------------
+        .                .          .           #ifndef _STRING_H
+        .                .          .           # error "Never use <bits/string_fortified.h> directly; include <string.h> instead."
+        .                .          .           #endif
+        .                .          .           
+        .                .          .           __fortify_function void *
+        .                .          .           __NTH (memcpy (void *__restrict __dest, const void *__restrict __src,
+        .                .          .           	       size_t __len))
+        .                .          .           {
+1,949,730 ( 0.17%) 389,946 ( 0.15%) 0             return __builtin___memcpy_chk (__dest, __src, __len,
+        .                .          .           				 __glibc_objsize0 (__dest));
+        .                .          .           }
+        .                .          .           
+        .                .          .           __fortify_function void *
+        .                .          .           __NTH (memmove (void *__dest, const void *__src, size_t __len))
+        .                .          .           {
+        .                .          .             return __builtin___memmove_chk (__dest, __src, __len,
+        .                .          .           				  __glibc_objsize0 (__dest));
+-- line 37 ----------------------------------------
+
+--------------------------------------------------------------------------------
+-- User-annotated source: barenn.cpp
+--------------------------------------------------------------------------------
+Ir                   Dr                  D1mr             
+
+-- line 60 ----------------------------------------
+          .                   .                .               // não é copiada: ela pertence à amostra ou à camada anterior e continua
+          .                   .                .               // válida até o Backward da mesma amostra.
+          .                   .                .               const float* last_input = nullptr;
+          .                   .                .               v8f last_z[blocos];
+          .                   .                .               v8f out[blocos];
+          .                   .                .               v8f delta[blocos];
+          .                   .                .               alignas(32) float grad_in[IN];
+          .                   .                .           
+        560 ( 0.00%)         58 ( 0.00%)       0               float& peso(int i, int j) { return weights[j][i / largura][i % largura]; }
+          .                   .                .           
+          .                   .                .           public:
+      2,826 ( 0.00%)          3 ( 0.00%)       1 ( 0.00%)      DenseLayer() {
+          .                   .                .                   // A semente fixa torna a inicialização de cada camada reproduzível.
+          .                   .                .                   // A ordem de sorteio é a do legado: neurônio a neurônio.
+          .                   .                .                   mt19937 gen(1337);
+          .                   .                .                   uniform_real_distribution<float> distribution(-0.05f, 0.05f);
+        180 ( 0.00%)          0                0                   for (int i = 0; i < OUT; ++i) {
+     10,938 ( 0.00%)          0                0                       for (int j = 0; j < IN; ++j) {
+      2,720 ( 0.00%)          0                .                           peso(i, j) = distribution(gen);
+     21,896 ( 0.00%)          0                0                           weights_lin[i][j / largura][j % largura] = peso(i, j);
+          .                   .                .                       }
+          .                   .                .                   }
+          .                   .                .               }
+          .                   .                .           
+          .                   .                .               // Devolve as saídas da camada (saidas floats, as OUT primeiras válidas).
+          .                   .                .               const float* Forward(const float* input) {
+  1,568,769 ( 0.14%)      3,594 ( 0.00%)       .                   last_input = input;
+          .                   .                .                   // Cada neurônio soma o viés aos produtos entre entradas e pesos, na
+          .                   .                .                   // ordem j = 0, 1, ..., IN - 1, como no legado.
+          .                   .                .                   v8f sum[blocos];
+          .                   .                .                   for (int b = 0; b < blocos; ++b) {
+  1,768,152 ( 0.16%)  1,181,028 ( 0.44%)       1 ( 0.00%)              sum[b] = bias[b];
+          .                   .                .                   }
+ 75,758,247 ( 6.71%)          0                0                   for (int j = 0; j < IN; ++j) {
+          .                   .                .                       const float entrada = input[j];
+    615,468 ( 0.05%)          0                0                       for (int b = 0; b < blocos; ++b) {
+164,068,368 (14.54%) 89,140,392 (33.47%) 787,170 (90.79%)                  sum[b] += entrada * weights[j][b];
+          .                   .                .                       }
+          .                   .                .                   }
+  1,371,999 ( 0.12%)          0                0                   for (int b = 0; b < blocos; ++b) {
+  1,575,957 ( 0.14%)      1,797 ( 0.00%)       0                       last_z[b] = sum[b];
+          .                   .                .                       // As camadas ocultas usam ReLU. A última devolve escores lineares.
+  9,605,790 ( 0.85%)          0                0                       out[b] = FINAL ? sum[b] : (sum[b] > 0.0f ? sum[b] : v8f{});
+          .                   .                .                   }
+          7 ( 0.00%)          0                0                   return reinterpret_cast<const float*>(out);
+          .                   .                .               }
+          .                   .                .           
+          .                   .                .               // grad_out deve ter saidas floats, com zero nas posições extras.
+          .                   .                .               // Com GRAD_IN = false, pula o gradiente da entrada: a primeira camada
+          .                   .                .               // não tem camada anterior para recebê-lo.
+          .                   .                .               template <bool GRAD_IN = true>
+          .                   .                .               const float* Backward(const float* grad_out, float learning_rate) {
+          .                   .                .                   // Delta é o gradiente da perda em relação à soma antes da ativação.
+          .                   .                .                   // Na ReLU, o gradiente passa apenas quando essa soma é positiva.
+    584,919 ( 0.05%)    194,973 ( 0.07%)       .                   for (int b = 0; b < blocos; ++b) {
+          .                   .                .                       v8f g;
+          .                   .                .                       memcpy(&g, grad_out + b * largura, sizeof(g));
+  1,754,757 ( 0.16%)          0                0                       delta[b] = FINAL ? g
+  3,704,487 ( 0.33%)  2,924,595 ( 1.10%)       0                                        : g * (last_z[b] > 0.0f ? v8f{} + 1.0f : v8f{});
+          .                   .                .                   }
+          .                   .                .           
+          .                   .                .                   // O gradiente da entrada usa os pesos anteriores à atualização.
+          .                   .                .                   if constexpr (GRAD_IN) {
+          .                   .                .                       v8f sum[blocos_in] = {};
+          .                   .                .                       for (int i = 0; i < OUT; ++i) {
+          .                   .                .                           const float d = delta[i / largura][i % largura];
+  1,754,757 ( 0.16%)          0                0                           for (int b = 0; b < blocos_in; ++b) {
+ 54,399,507 ( 4.82%) 17,938,536 ( 6.74%)       0                               sum[b] += d * weights_lin[i][b];
+          .                   .                .                           }
+          .                   .                .                       }
+          .                   .                .                       memcpy(grad_in, sum, sizeof(grad_in));
+          .                   .                .                   }
+          .                   .                .           
+          .                   .                .                   // SGD por amostra. O gradiente do peso é delta vezes a entrada.
+          .                   .                .                   // O gradiente do viés é o próprio delta.
+ 75,259,578 ( 6.67%)    194,973 ( 0.07%)       .                   for (int j = 0; j < IN; ++j) {
+          .                   .                .                       const float entrada = last_input[j];
+          .                   .                .                       for (int b = 0; b < blocos; ++b) {
+372,398,430 (33.00%) 89,102,661 (33.46%)       0                           weights[j][b] -= learning_rate * (delta[b] * entrada);
+          .                   .                .                       }
+          .                   .                .                   }
+          .                   .                .                   if constexpr (GRAD_IN) {
+          .                   .                .                       v8f entrada[blocos_in];
+          .                   .                .                       memcpy(entrada, last_input, sizeof(entrada));
+ 12,868,218 ( 1.14%)          .                .                       for (int i = 0; i < OUT; ++i) {
+ 18,717,408 ( 1.66%)          0                0                           const float d = delta[i / largura][i % largura];
+          .                   .                .                           for (int b = 0; b < blocos_in; ++b) {
+ 90,272,499 ( 8.00%) 20,667,138 ( 7.76%)       0                               weights_lin[i][b] -= learning_rate * (d * entrada[b]);
+          .                   .                .                           }
+          .                   .                .                       }
+          .                   .                .                   }
+          .                   .                .                   for (int b = 0; b < blocos; ++b) {
+  7,798,920 ( 0.69%)  1,559,784 ( 0.59%)       0                       bias[b] -= learning_rate * delta[b];
+          .                   .                .                   }
+          .                   .                .                   return grad_in;
+          .                   .                .               }
+          .                   .                .           
+          .                   .                .               // Grava pesos (neurônio a neurônio, como no legado) e vieses em binário
+          .                   .                .               // para validar a corretude bit a bit entre versões.
+          .                   .                .               void Salvar(ostream& saida) const {
+          .                   .                .                   for (int i = 0; i < OUT; ++i) {
+-- line 160 ----------------------------------------
+-- line 190 ----------------------------------------
+          .                   .                .                   l1.Salvar(saida);
+          .                   .                .                   l2.Salvar(saida);
+          .                   .                .                   l3.Salvar(saida);
+          .                   .                .               }
+          .                   .                .           };
+          .                   .                .           
+          .                   .                .           // Imagens em um único bloco contíguo (amostra i em imagens[i * entradas]),
+          .                   .                .           // percorrido sequencialmente a cada época.
+          8 ( 0.00%)          2 ( 0.00%)       0           struct Conjunto {
+          .                   .                .               vector<float> imagens;
+          .                   .                .               vector<int> rotulos;
+          .                   .                .           
+          .                   .                .               size_t size() const { return rotulos.size(); }
+          .                   .                .               const float* imagem(size_t i) const { return &imagens[i * entradas]; }
+          .                   .                .           };
+          .                   .                .           
+          .                   .                .           // Pula espaços em branco, como o operator>> dos streams.
+          .                   .                .           const char* pular_espacos(const char* p, const char* fim) {
+  4,732,050 ( 0.42%)    724,982 ( 0.27%)     256 ( 0.03%)      while (p < fim && isspace(static_cast<unsigned char>(*p))) {
+     50,580 ( 0.00%)     28,100 ( 0.01%)       .           => ???:0x000000000010a3e0 (5,620x)
+          2 ( 0.00%)          .                .                   ++p;
+          .                   .                .               }
+          .                   .                .               return p;
+          .                   .                .           }
+          .                   .                .           
+          .                   .                .           // Lê um número como o operator>> (espaços antes e sinal '+' opcionais) com
+          .                   .                .           // std::from_chars, que não usa locale nem aloca memória.
+          .                   .                .           template <typename T>
+     50,580 ( 0.00%)          0                0           const char* ler_numero(const char* p, const char* fim, T& valor) {
+          .                   .                .               p = pular_espacos(p, fim);
+    741,840 ( 0.07%)          .                .               if (p < fim && *p == '+') {
+  1,438,720 ( 0.13%)          .                .                   ++p;
+          .                   .                .               }
+  1,798,400 ( 0.16%)          0                0               const auto [resto, erro] = from_chars(p, fim, valor);
+ 51,769,436 ( 4.59%)  8,355,584 ( 3.14%)  12,730 ( 1.47%)  => ???:0x000000000010a460 (359,680x)
+  1,079,040 ( 0.10%)          .                .               return erro == errc{} ? resto : nullptr;
+     39,340 ( 0.00%)     28,100 ( 0.01%)       .           }
+          .                   .                .           
+          .                   .                .           // Valida e converte uma linha [p, fim): 64 atributos de 0 a 16, cada um
+          .                   .                .           // seguido por vírgula, e um rótulo inteiro de 0 a 9. Devolve false se a
+          .                   .                .           // linha é inválida.
+     95,540 ( 0.01%)      5,620 ( 0.00%)      29 ( 0.00%)  bool ler_linha(const char* p, const char* fim, float* imagem, int& rotulo) {
+          .                   .                .               // Cada atributo deve ser seguido por vírgula, inclusive o último.
+  1,084,660 ( 0.10%)          .                .               for (int i = 0; i < entradas; ++i) {
+          .                   .                .                   float valor;
+    719,360 ( 0.06%)          .                .                   if (!(p = ler_numero(p, fim, valor))) {
+          .                   .                .                       return false;
+          .                   .                .                   }
+          .                   .                .                   p = pular_espacos(p, fim);
+  2,158,080 ( 0.19%)    719,360 ( 0.27%)       2 ( 0.00%)          if (p == fim || *p++ != ',' ||
+  2,877,440 ( 0.26%)    719,360 ( 0.27%)       0                       !isfinite(valor) || valor < 0 || valor > 16) {
+          .                   .                .                       return false;
+          .                   .                .                   }
+          .                   .                .                   // Converte os valores de [0, 16] para [0, 1].
+    719,360 ( 0.06%)    359,680 ( 0.14%)       0                   imagem[i] = valor / 16.0f;
+          .                   .                .               }
+          .                   .                .               // Depois dos atributos, deve restar apenas o rótulo de 0 a 9.
+     44,960 ( 0.00%)     11,240 ( 0.00%)       0               return (p = ler_numero(p, fim, rotulo)) && rotulo >= 0 &&
+    376,544 ( 0.03%)     67,442 ( 0.03%)      54 ( 0.01%)  => barenn.cpp:char const* Barenn::ler_numero<int>(char const*, char const*, int&) (5,620x)
+     33,720 ( 0.00%)          .                .                      rotulo < classes && pular_espacos(p, fim) == fim;
+     61,820 ( 0.01%)     50,580 ( 0.02%)       1 ( 0.00%)  }
+          .                   .                .           
+          .                   .                .           // Lê o arquivo inteiro de uma vez e converte as linhas em paralelo: cada
+          .                   .                .           // linha é independente e escreve na sua própria posição do Conjunto.
+         32 ( 0.00%)          2 ( 0.00%)       0           Conjunto ler_dados(const string& caminho) {
+          .                   .                .               ifstream arquivo(caminho, ios::binary);
+          4 ( 0.00%)          2 ( 0.00%)       .               if (!arquivo) {
+          .                   .                .                   throw runtime_error("Não foi possível abrir " + caminho);
+          .                   .                .               }
+          .                   .                .               const string conteudo{istreambuf_iterator<char>(arquivo),
+          .                   .                .                                     istreambuf_iterator<char>()};
+          8 ( 0.00%)          4 ( 0.00%)       2 ( 0.00%)      if (arquivo.bad() || conteudo.empty()) {
+          .                   .                .                   throw runtime_error("Falha de leitura ou arquivo vazio: " + caminho);
+          .                   .                .               }
+          .                   .                .           
+          .                   .                .               // Separa as linhas como o getline: por '\n', sem linha extra no final.
+          .                   .                .               vector<size_t> inicios;
+     11,248 ( 0.00%)          0                0               for (size_t pos = 0; pos < conteudo.size();) {
+          .                   .                .                   inicios.push_back(pos);
+     28,100 ( 0.00%)      5,620 ( 0.00%)       0                   const size_t fim = conteudo.find('\n', pos);
+    468,476 ( 0.04%)     86,220 ( 0.03%)  13,014 ( 1.50%)  => ???:0x000000000010a5f0 (5,620x)
+     22,480 ( 0.00%)          0                .                   pos = fim == string::npos ? conteudo.size() : fim + 1;
+          .                   .                .               }
+          4 ( 0.00%)          0                0               inicios.push_back(conteudo.size() + 1);
+          .                   .                .           
+          2 ( 0.00%)          .                .               const long linhas = static_cast<long>(inicios.size()) - 1;
+          .                   .                .               Conjunto dados;
+          .                   .                .               dados.imagens.resize(linhas * entradas);
+          2 ( 0.00%)          .                .               dados.rotulos.resize(linhas);
+          .                   .                .               // Como no legado, o erro aponta a primeira linha inválida do arquivo.
+          .                   .                .               long primeira_invalida = linhas;
+      1,248 ( 0.00%)        228 ( 0.00%)      21 ( 0.00%)  #pragma omp parallel for schedule(static) reduction(min : primeira_invalida)
+        320 ( 0.00%)        160 ( 0.00%)      90 ( 0.01%)  => ???:0x000000000010a760 (32x)
+        192 ( 0.00%)        128 ( 0.00%)      23 ( 0.00%)  => ???:0x000000000010a6b0 (32x)
+          .                   .                .               for (long l = 0; l < linhas; ++l) {
+      5,620 ( 0.00%)      5,620 ( 0.00%)       3 ( 0.00%)          const char* linha = conteudo.data() + inicios[l];
+     11,240 ( 0.00%)      5,620 ( 0.00%)     730 ( 0.08%)          const char* fim = conteudo.data() + inicios[l + 1] - 1;
+     67,492 ( 0.01%)      5,620 ( 0.00%)       .                   if (!ler_linha(linha, fim, &dados.imagens[l * entradas], dados.rotulos[l])) {
+ 76,503,090 ( 6.78%) 14,964,718 ( 5.62%)  13,059 ( 1.51%)  => barenn.cpp:Barenn::ler_linha(char const*, char const*, float*, int&) (5,620x)
+          .                   .                .                       primeira_invalida = min(primeira_invalida, l);
+          .                   .                .                   }
+          .                   .                .               }
+          4 ( 0.00%)          .                .               if (primeira_invalida < linhas) {
+          .                   .                .                   throw runtime_error(caminho + ":" + to_string(primeira_invalida + 1) +
+          .                   .                .                       " — esperados 64 atributos de 0 a 16 e um rótulo inteiro de 0 a 9");
+          .                   .                .               }
+          .                   .                .               return dados;
+         24 ( 0.00%)         18 ( 0.00%)       4 ( 0.00%)  }
+          .                   .                .           
+          .                   .                .           // Calcula metade da soma dos erros quadráticos. O alvo vale 1 para a
+          .                   .                .           // classe correta e 0 para as demais. O erro também é a derivada por escore.
+          .                   .                .           float perda(const float* escores, int rotulo, float* gradiente = nullptr) {
+          .                   .                .               float total = 0;
+          .                   .                .               for (int i = 0; i < classes; ++i) {
+  3,733,873 ( 0.33%)    202,865 ( 0.08%)       0                   float erro = escores[i] - (i == rotulo ? 1.0f : 0.0f);
+  7,114,761 ( 0.63%)  1,969,317 ( 0.74%)       1 ( 0.00%)          total += 0.5f * erro * erro;
+          .                   .                .                   if (gradiente) {
+  2,437,596 ( 0.22%)          0                0                       gradiente[i] = erro;
+          .                   .                .                   }
+          .                   .                .               }
+          .                   .                .               return total;
+          .                   .                .           }
+          .                   .                .           
+         18 ( 0.00%)          2 ( 0.00%)       0           void avaliar(Rede& rede, const Conjunto& teste) {
+          .                   .                .               struct Exemplo {
+          .                   .                .                   size_t linha;
+          .                   .                .                   int real;
+          .                   .                .                   int previsto;
+          .                   .                .                   int segundo;
+          .                   .                .                   float maior_escore;
+          .                   .                .                   float segundo_escore;
+          .                   .                .               };
+          .                   .                .           
+          .                   .                .               // Linhas representam a classe esperada e colunas, a classe prevista.
+        104 ( 0.00%)          0                .               array<array<size_t, classes>, classes> confusoes{};
+          .                   .                .               vector<Exemplo> exemplos;
+          2 ( 0.00%)          0                .               size_t acertos = 0;
+          1 ( 0.00%)          0                .               size_t exemplos_acerto = 0;
+          1 ( 0.00%)          0                0               size_t exemplos_erro = 0;
+          2 ( 0.00%)          0                .               double perda_total = 0;
+          .                   .                .           
+          .                   .                .               // Só fazemos forward aqui. Os pesos ficam fixos.
+      3,598 ( 0.00%)      1,798 ( 0.00%)       .               for (size_t i = 0; i < teste.size(); ++i) {
+      5,391 ( 0.00%)      3,594 ( 0.00%)     114 ( 0.01%)          const int rotulo = teste.rotulos[i];
+          .                   .                .                   const float* escores = rede.Forward(teste.imagem(i));
+          .                   .                .                   // O índice do maior escore indica a classe prevista.
+          .                   .                .                   int previsto = static_cast<int>(
+      7,188 ( 0.00%)      1,797 ( 0.00%)       .                       max_element(escores, escores + classes) - escores);
+      7,188 ( 0.00%)      1,797 ( 0.00%)       .                   bool acertou = previsto == rotulo;
+      1,797 ( 0.00%)          0                0                   acertos += acertou;
+      5,391 ( 0.00%)          0                0                   ++confusoes[rotulo][previsto];
+      5,391 ( 0.00%)      1,797 ( 0.00%)       .                   perda_total += perda(escores, rotulo);
+          .                   .                .           
+          .                   .                .                   // Guarda até três acertos e três erros para ilustrar a saída.
+          .                   .                .                   // A acurácia usa todas as imagens, inclusive as não exibidas.
+     14,296 ( 0.00%)      5,391 ( 0.00%)       0                   size_t& exemplos_tipo = acertou ? exemplos_acerto : exemplos_erro;
+      3,594 ( 0.00%)      1,797 ( 0.00%)       .                   if (exemplos_tipo < 3) {
+         19 ( 0.00%)          6 ( 0.00%)       .                       int segundo = previsto == 0 ? 1 : 0;
+          7 ( 0.00%)          0                0                       for (int classe = 0; classe < classes; ++classe) {
+        253 ( 0.00%)         50 ( 0.00%)       0                           if (classe != previsto && escores[classe] > escores[segundo]) {
+          .                   .                .                               segundo = classe;
+          .                   .                .                           }
+          .                   .                .                       }
+      1,797 ( 0.00%)          0                0                       exemplos.push_back({i + 1, rotulo, previsto, segundo,
+         18 ( 0.00%)         12 ( 0.00%)       0                                           escores[previsto], escores[segundo]});
+         30 ( 0.00%)         12 ( 0.00%)       0                       ++exemplos_tipo;
+          .                   .                .                   }
+          .                   .                .               }
+          .                   .                .           
+          .                   .                .               cout << "\nAVALIACAO FINAL\n"
+         11 ( 0.00%)          2 ( 0.00%)       1 ( 0.00%)           << "Acuracia " << setprecision(1) << 100.0 * acertos / teste.size()
+          .                   .                .                    << "% | " << acertos << " acertos em " << teste.size() << " imagens\n"
+          6 ( 0.00%)          1 ( 0.00%)       .                    << "Perda media " << setprecision(4) << perda_total / teste.size() << "\n";
+          .                   .                .           
+          .                   .                .               cout << "\nALGUMAS INFERENCIAS\n";
+          .                   .                .               cout << "Esperado  Previsto\n";
+          .                   .                .           
+         17 ( 0.00%)          8 ( 0.00%)       .               for (const auto& exemplo : exemplos) {
+          .                   .                .                   cout << right << setw(8) << exemplo.real
+         48 ( 0.00%)         12 ( 0.00%)       3 ( 0.00%)               << "  " << setw(8) << exemplo.previsto << '\n';
+      6,246 ( 0.00%)      1,524 ( 0.00%)       5 ( 0.00%)  => ???:0x000000000010a720 (12x)
+          .                   .                .               }
+          .                   .                .           
+          .                   .                .               struct Confusao {
+          .                   .                .                   int real;
+          .                   .                .                   int previsto;
+          .                   .                .                   size_t ocorrencias;
+          .                   .                .               };
+          .                   .                .               vector<Confusao> erros;
+         53 ( 0.00%)         11 ( 0.00%)       0               for (int real = 0; real < classes; ++real) {
+        329 ( 0.00%)          0                .                   for (int previsto = 0; previsto < classes; ++previsto) {
+        560 ( 0.00%)        280 ( 0.00%)       2 ( 0.00%)              if (real != previsto && confusoes[real][previsto] > 0) {
+          .                   .                .                           erros.push_back({real, previsto, confusoes[real][previsto]});
+          .                   .                .                       }
+          .                   .                .                   }
+          .                   .                .               }
+          .                   .                .               // Ordena os pares incorretos do mais frequente para o menos frequente.
+          .                   .                .               stable_sort(erros.begin(), erros.end(), [](const auto& a, const auto& b) {
+         30 ( 0.00%)         30 ( 0.00%)       .                   return a.ocorrencias > b.ocorrencias;
+          .                   .                .               });
+          .                   .                .               cout << "\nCONFUSOES MAIS FREQUENTES\n";
+          .                   .                .           
+          2 ( 0.00%)          .                .               if (erros.empty()) {
+          .                   .                .                   cout << "Nenhuma neste conjunto.\n";
+          .                   .                .               } else {
+          .                   .                .                   cout << "Esperado  Previsto  Ocorrencias\n";
+          .                   .                .           
+         15 ( 0.00%)          4 ( 0.00%)       0                   for (size_t i = 0; i < min<size_t>(3, erros.size()); ++i) {
+          .                   .                .                       const auto& erro = erros[i];
+          .                   .                .                       cout << right << setw(8) << erro.real
+         12 ( 0.00%)          3 ( 0.00%)       .                           << "  " << setw(8) << erro.previsto
+      1,560 ( 0.00%)        381 ( 0.00%)       .           => ???:0x000000000010a720 (3x)
+         12 ( 0.00%)          3 ( 0.00%)       .                           << "  " << setw(11) << erro.ocorrencias << '\n';
+      1,560 ( 0.00%)        381 ( 0.00%)       .           => ???:0x000000000010a720 (3x)
+          .                   .                .                   }
+          .                   .                .               }
+          9 ( 0.00%)          7 ( 0.00%)       2 ( 0.00%)  }
+          .                   .                .           
+          .                   .                .           } // namespace Barenn
+          .                   .                .           
+         43 ( 0.00%)          1 ( 0.00%)       0           int main(int argc, char** argv) {
+          6 ( 0.00%)          1 ( 0.00%)       .               if (argc != 1 && argc != 3) {
+          .                   .                .                   cerr << "Uso: " << argv[0] << " [arquivo_treino arquivo_teste]\n";
+          .                   .                .                   return 1;
+          .                   .                .               }
+          9 ( 0.00%)          0                0               const string arquivo_treino = argc == 3 ? argv[1] : "optdigits.tra";
+         75 ( 0.00%)         17 ( 0.00%)       2 ( 0.00%)  => /usr/include/c++/11/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (1x)
+          6 ( 0.00%)          1 ( 0.00%)       .               const string arquivo_teste = argc == 3 ? argv[2] : "optdigits.tes";
+         75 ( 0.00%)         17 ( 0.00%)       1 ( 0.00%)  => /usr/include/c++/11/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (1x)
+          .                   .                .           
+          .                   .                .               try {
+          5 ( 0.00%)          0                0                   const auto treino = Barenn::ler_dados(arquivo_treino);
+ 16,819,922 ( 1.49%)  5,961,627 ( 2.24%)  26,443 ( 3.05%)  => barenn.cpp:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (1x)
+          3 ( 0.00%)          0                .                   const auto teste = Barenn::ler_dados(arquivo_teste);
+  9,147,240 ( 0.81%)  2,989,355 ( 1.12%)  12,870 ( 1.48%)  => barenn.cpp:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (1x)
+         22 ( 0.00%)          0                0                   if (filesystem::equivalent(arquivo_treino, arquivo_teste)) {
+      2,938 ( 0.00%)        875 ( 0.00%)      91 ( 0.01%)  => ???:0x000000000010a530 (1x)
+        786 ( 0.00%)         96 ( 0.00%)       3 ( 0.00%)  => /usr/include/c++/11/bits/fs_path.h:std::filesystem::__cxx11::path::path<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::filesystem::__cxx11::path>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::filesystem::__cxx11::path::format) (2x)
+         40 ( 0.00%)         12 ( 0.00%)       0           => /usr/include/c++/11/bits/fs_path.h:std::filesystem::__cxx11::path::~path() (2x)
+          .                   .                .                       throw runtime_error("Use arquivos distintos para treino e teste.");
+          .                   .                .                   }
+          .                   .                .                   // A leitura é a única região paralela. Sem isto, as threads ociosas
+          .                   .                .                   // do OpenMP ficam em espera ativa (spin) durante o treino serial,
+          .                   .                .                   // ocupando núcleos e reduzindo o turbo do núcleo que treina.
+          2 ( 0.00%)          0                .                   omp_pause_resource_all(omp_pause_soft);
+  4,208,951 ( 0.37%)    602,813 ( 0.23%)     220 ( 0.03%)  => ???:0x000000000010a4d0 (1x)
+          .                   .                .           
+          .                   .                .                   constexpr int epocas = 51;
+          .                   .                .                   constexpr float taxa = 0.02f;
+          .                   .                .                   Barenn::Rede rede;
+          .                   .                .                   // Escores e gradiente têm as posições extras da última camada (zeradas).
+          7 ( 0.00%)          1 ( 0.00%)       0                   alignas(32) array<float, decltype(rede.l3)::saidas> gradiente{};
+         55 ( 0.00%)          0                0                   array<double, epocas> perdas{};
+          .                   .                .           
+          .                   .                .                   // A medição inclui forward, perda e backward de todas as épocas.
+          2 ( 0.00%)          0                .                   const auto inicio = chrono::steady_clock::now();
+        931 ( 0.00%)        305 ( 0.00%)      39 ( 0.00%)  => ???:0x000000000010a610 (1x)
+        153 ( 0.00%)         51 ( 0.00%)       0                   for (int epoca = 0; epoca < epocas; ++epoca) {
+        153 ( 0.00%)         51 ( 0.00%)       .                       double perda_total = 0;
+          .                   .                .                       // Uma época percorre todo o conjunto na ordem do arquivo.
+    779,994 ( 0.07%)    194,973 ( 0.07%)       0                       for (size_t i = 0; i < treino.size(); ++i) {
+          .                   .                .                           const float* escores = rede.Forward(treino.imagem(i));
+  1,364,811 ( 0.12%)    584,919 ( 0.22%)  12,189 ( 1.41%)                  perda_total += Barenn::perda(escores, treino.rotulos[i],
+          .                   .                .                                                        gradiente.data());
+          .                   .                .                           rede.Backward(gradiente.data(), taxa);
+          .                   .                .                       }
+        411 ( 0.00%)        102 ( 0.00%)      51 ( 0.01%)              perdas[epoca] = perda_total / treino.size();
+          .                   .                .                   }
+          2 ( 0.00%)          0                .                   const chrono::duration<double> tempo = chrono::steady_clock::now() - inicio;
+         30 ( 0.00%)         11 ( 0.00%)       5 ( 0.00%)  => ???:0x000000000010a610 (1x)
+          .                   .                .           
+          .                   .                .                   // Imprime as métricas e roda a avaliação após encerrar o cronômetro.
+          .                   .                .                   cout << fixed << setprecision(4)
+          3 ( 0.00%)          0                .                        << "TREINO | " << treino.size() << " imagens\n";
+      2,300 ( 0.00%)        666 ( 0.00%)      26 ( 0.00%)  => ???:0x000000000010a560 (1x)
+         44 ( 0.00%)          0                0                   for (int epoca = 0; epoca < epocas; epoca += 5) {
+         44 ( 0.00%)          0                0                       cout << "Epoca " << setw(2) << epoca + 1 << "/" << epocas
+     10,194 ( 0.00%)      2,742 ( 0.00%)      62 ( 0.01%)  => ???:0x000000000010a720 (11x)
+         44 ( 0.00%)          0                .                            << " | perda media " << perdas[epoca] << "\n";
+      4,499 ( 0.00%)      1,155 ( 0.00%)       0           => ???:0x000000000010a720 (11x)
+          .                   .                .                   }
+          2 ( 0.00%)          0                .                   cout << "Tempo de treino " << tempo.count() << " s\n";
+        267 ( 0.00%)         75 ( 0.00%)       1 ( 0.00%)  => ???:0x000000000010a560 (1x)
+          .                   .                .           
+          .                   .                .                   // Com BARENN_PESOS definido, grava os parâmetros finais para validação.
+          5 ( 0.00%)          0                0                   if (const char* caminho = getenv("BARENN_PESOS")) {
+        784 ( 0.00%)        255 ( 0.00%)      80 ( 0.01%)  => ???:0x000000000010a5e0 (1x)
+          .                   .                .                       ofstream pesos(caminho, ios::binary);
+          .                   .                .                       rede.Salvar(pesos);
+          .                   .                .                   }
+          4 ( 0.00%)          2 ( 0.00%)       0                   Barenn::avaliar(rede, teste);
+  2,543,013 ( 0.23%)    912,539 ( 0.34%)   7,482 ( 0.86%)  => barenn.cpp:Barenn::avaliar(Barenn::Rede&, Barenn::Conjunto const&) (1x)
+          4 ( 0.00%)          1 ( 0.00%)       1 ( 0.00%)      } catch (const exception& erro) {
+        638 ( 0.00%)        182 ( 0.00%)      12 ( 0.00%)  => barenn.cpp:Barenn::Conjunto::~Conjunto() (2x)
+          .                   .                .                   cerr << "Erro: " << erro.what() << "\n";
+          .                   .                .                   return 1;
+          .                   .                .               }
+         17 ( 0.00%)         11 ( 0.00%)       3 ( 0.00%)  }
+
+--------------------------------------------------------------------------------
+-- Auto-annotated source: /usr/include/c++/11/bits/basic_string.tcc
+--------------------------------------------------------------------------------
+Ir                 Dr               D1mr       
+
+-- line 155 ----------------------------------------
+        .                .          .           
+        .                .          .             // NB: This is the special case for Input Iterators, used in
+        .                .          .             // istreambuf_iterators, etc.
+        .                .          .             // Input Iterators have a cost structure very different from
+        .                .          .             // pointers, calling for a different coding style.
+        .                .          .             template<typename _CharT, typename _Traits, typename _Alloc>
+        .                .          .               template<typename _InIterator>
+        .                .          .                 void
+        6 ( 0.00%)       .          .                 basic_string<_CharT, _Traits, _Alloc>::
+        .                .          .                 _M_construct(_InIterator __beg, _InIterator __end,
+        .                .          .           		   std::input_iterator_tag)
+        .                .          .                 {
+        2 ( 0.00%)       .          .           	size_type __len = 0;
+        2 ( 0.00%)       0          0           	size_type __capacity = size_type(_S_local_capacity);
+        .                .          .           
+       64 ( 0.00%)      32 ( 0.00%) 0           	while (__beg != __end && __len < __capacity)
+        .                .          .           	  {
+      120 ( 0.00%)      30 ( 0.00%) .           	    _M_data()[__len++] = *__beg;
+        .                .          .           	    ++__beg;
+        .                .          .           	  }
+        .                .          .           
+        .                .          .           	__try
+        .                .          .           	  {
+        .                .          .           	    while (__beg != __end)
+        .                .          .           	      {
+2,484,832 ( 0.22%) 828,321 ( 0.31%) .           		if (__len == __capacity)
+        .                .          .           		  {
+        .                .          .           		    // Allocate more space.
+       62 ( 0.00%)       0          .           		    __capacity = __len + 1;
+      161 ( 0.00%)      31 ( 0.00%) 0           		    pointer __another = _M_create(__capacity, __len);
+    8,792 ( 0.00%)   1,580 ( 0.00%) 155 ( 0.02%)  => ???:0x000000000010a740 (31x)
+        .                .          .           		    this->_S_copy(__another, _M_data(), __len);
+        .                .          .           		    _M_dispose();
+        .                .          .           		    _M_data(__another);
+        .                .          .           		    _M_capacity(__capacity);
+        .                .          .           		  }
+3,313,284 ( 0.29%) 828,321 ( 0.31%) 0           		_M_data()[__len++] = *__beg;
+        .                .          .           		++__beg;
+        .                .          .           	      }
+        .                .          .           	  }
+        .                .          .           	__catch(...)
+        .                .          .           	  {
+        .                .          .           	    _M_dispose();
+        .                .          .           	    __throw_exception_again;
+        .                .          .           	  }
+-- line 198 ----------------------------------------
+-- line 203 ----------------------------------------
+        .                .          .             template<typename _CharT, typename _Traits, typename _Alloc>
+        .                .          .               template<typename _InIterator>
+        .                .          .                 void
+        .                .          .                 basic_string<_CharT, _Traits, _Alloc>::
+        .                .          .                 _M_construct(_InIterator __beg, _InIterator __end,
+        .                .          .           		   std::forward_iterator_tag)
+        .                .          .                 {
+        .                .          .           	// NB: Not required, but considered best practice.
+       10 ( 0.00%)       0          0           	if (__gnu_cxx::__is_null_pointer(__beg) && __beg != __end)
+        .                .          .           	  std::__throw_logic_error(__N("basic_string::"
+        .                .          .           				       "_M_construct null not valid"));
+        .                .          .           
+        4 ( 0.00%)       0          .           	size_type __dnew = static_cast<size_type>(std::distance(__beg, __end));
+        .                .          .           
+        8 ( 0.00%)       .          .           	if (__dnew > size_type(_S_local_capacity))
+        .                .          .           	  {
+        .                .          .           	    _M_data(_M_create(__dnew, size_type(0)));
+        .                .          .           	    _M_capacity(__dnew);
+        .                .          .           	  }
+        .                .          .           
+        .                .          .           	// Check for out_of_range and length_error exceptions.
+        .                .          .           	__try
+        .                .          .           	  { this->_S_copy_chars(_M_data(), __beg, __end); }
+        .                .          .           	__catch(...)
+        .                .          .           	  {
+        .                .          .           	    _M_dispose();
+        .                .          .           	    __throw_exception_again;
+        .                .          .           	  }
+        .                .          .           
+        4 ( 0.00%)       4 ( 0.00%) .           	_M_set_length(__dnew);
+        .                .          .                 }
+        .                .          .           
+        .                .          .             template<typename _CharT, typename _Traits, typename _Alloc>
+        .                .          .               void
+        .                .          .               basic_string<_CharT, _Traits, _Alloc>::
+        .                .          .               _M_construct(size_type __n, _CharT __c)
+        .                .          .               {
+        .                .          .                 if (__n > size_type(_S_local_capacity))
+-- line 240 ----------------------------------------
+
+--------------------------------------------------------------------------------
+The following files chosen for auto-annotation could not be found:
+--------------------------------------------------------------------------------
+  ./ctype/./ctype/ctype.c
+
+--------------------------------------------------------------------------------
+Ir                   Dr                   D1mr             
+--------------------------------------------------------------------------------
+942,744,563 (83.55%) 233,054,148 (87.51%) 800,607 (92.34%)  events annotated
+

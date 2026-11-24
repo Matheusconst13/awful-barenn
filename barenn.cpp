@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <charconv>
 #include <array>
 #include <chrono>
 #include <cmath>
@@ -14,6 +15,8 @@
 #include <string>
 #include <utility>
 #include <vector>
+
+#include <omp.h>
 
 using namespace std;
 
@@ -200,43 +203,88 @@ struct Conjunto {
     const float* imagem(size_t i) const { return &imagens[i * entradas]; }
 };
 
+// Pula espaços em branco, como o operator>> dos streams.
+const char* pular_espacos(const char* p, const char* fim) {
+    while (p < fim && isspace(static_cast<unsigned char>(*p))) {
+        ++p;
+    }
+    return p;
+}
+
+// Lê um número como o operator>> (espaços antes e sinal '+' opcionais) com
+// std::from_chars, que não usa locale nem aloca memória.
+template <typename T>
+const char* ler_numero(const char* p, const char* fim, T& valor) {
+    p = pular_espacos(p, fim);
+    if (p < fim && *p == '+') {
+        ++p;
+    }
+    const auto [resto, erro] = from_chars(p, fim, valor);
+    return erro == errc{} ? resto : nullptr;
+}
+
+// Valida e converte uma linha [p, fim): 64 atributos de 0 a 16, cada um
+// seguido por vírgula, e um rótulo inteiro de 0 a 9. Devolve false se a
+// linha é inválida.
+bool ler_linha(const char* p, const char* fim, float* imagem, int& rotulo) {
+    // Cada atributo deve ser seguido por vírgula, inclusive o último.
+    for (int i = 0; i < entradas; ++i) {
+        float valor;
+        if (!(p = ler_numero(p, fim, valor))) {
+            return false;
+        }
+        p = pular_espacos(p, fim);
+        if (p == fim || *p++ != ',' ||
+            !isfinite(valor) || valor < 0 || valor > 16) {
+            return false;
+        }
+        // Converte os valores de [0, 16] para [0, 1].
+        imagem[i] = valor / 16.0f;
+    }
+    // Depois dos atributos, deve restar apenas o rótulo de 0 a 9.
+    return (p = ler_numero(p, fim, rotulo)) && rotulo >= 0 &&
+           rotulo < classes && pular_espacos(p, fim) == fim;
+}
+
+// Lê o arquivo inteiro de uma vez e converte as linhas em paralelo: cada
+// linha é independente e escreve na sua própria posição do Conjunto.
 Conjunto ler_dados(const string& caminho) {
-    ifstream arquivo(caminho);
+    ifstream arquivo(caminho, ios::binary);
     if (!arquivo) {
         throw runtime_error("Não foi possível abrir " + caminho);
     }
-
-    Conjunto dados;
-    string linha;
-    size_t numero_linha = 0;
-    while (getline(arquivo, linha)) {
-        ++numero_linha;
-        istringstream campos(linha);
-        int lidos = 0;
-        // Cada atributo deve ser seguido por vírgula, inclusive o último.
-        for (; lidos < entradas; ++lidos) {
-            float valor;
-            char separador;
-            if (!(campos >> valor >> separador) || separador != ',' ||
-                !isfinite(valor) || valor < 0 || valor > 16) {
-                break;
-            }
-            // Converte os valores de [0, 16] para [0, 1].
-            dados.imagens.push_back(valor / 16.0f);
-        }
-        // Depois dos atributos, deve restar apenas o rótulo de 0 a 9.
-        int rotulo;
-        if (lidos != entradas ||
-            !(campos >> rotulo) ||
-            rotulo < 0 || rotulo >= classes ||
-            !(campos >> ws).eof()) {
-            throw runtime_error(caminho + ":" + to_string(numero_linha) +
-                " — esperados 64 atributos de 0 a 16 e um rótulo inteiro de 0 a 9");
-        }
-        dados.rotulos.push_back(rotulo);
-    }
-    if (arquivo.bad() || dados.rotulos.empty()) {
+    const string conteudo{istreambuf_iterator<char>(arquivo),
+                          istreambuf_iterator<char>()};
+    if (arquivo.bad() || conteudo.empty()) {
         throw runtime_error("Falha de leitura ou arquivo vazio: " + caminho);
+    }
+
+    // Separa as linhas como o getline: por '\n', sem linha extra no final.
+    vector<size_t> inicios;
+    for (size_t pos = 0; pos < conteudo.size();) {
+        inicios.push_back(pos);
+        const size_t fim = conteudo.find('\n', pos);
+        pos = fim == string::npos ? conteudo.size() : fim + 1;
+    }
+    inicios.push_back(conteudo.size() + 1);
+
+    const long linhas = static_cast<long>(inicios.size()) - 1;
+    Conjunto dados;
+    dados.imagens.resize(linhas * entradas);
+    dados.rotulos.resize(linhas);
+    // Como no legado, o erro aponta a primeira linha inválida do arquivo.
+    long primeira_invalida = linhas;
+#pragma omp parallel for schedule(static) reduction(min : primeira_invalida)
+    for (long l = 0; l < linhas; ++l) {
+        const char* linha = conteudo.data() + inicios[l];
+        const char* fim = conteudo.data() + inicios[l + 1] - 1;
+        if (!ler_linha(linha, fim, &dados.imagens[l * entradas], dados.rotulos[l])) {
+            primeira_invalida = min(primeira_invalida, l);
+        }
+    }
+    if (primeira_invalida < linhas) {
+        throw runtime_error(caminho + ":" + to_string(primeira_invalida + 1) +
+            " — esperados 64 atributos de 0 a 16 e um rótulo inteiro de 0 a 9");
     }
     return dados;
 }
@@ -363,6 +411,10 @@ int main(int argc, char** argv) {
         if (filesystem::equivalent(arquivo_treino, arquivo_teste)) {
             throw runtime_error("Use arquivos distintos para treino e teste.");
         }
+        // A leitura é a única região paralela. Sem isto, as threads ociosas
+        // do OpenMP ficam em espera ativa (spin) durante o treino serial,
+        // ocupando núcleos e reduzindo o turbo do núcleo que treina.
+        omp_pause_resource_all(omp_pause_soft);
 
         constexpr int epocas = 51;
         constexpr float taxa = 0.02f;
