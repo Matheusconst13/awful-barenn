@@ -1,0 +1,8 @@
+# Binários e saídas locais de ferramentas
+barenn
+barenn_cuda
+callgrind.out.barenn
+*.nsys-rep
+*.sqlite
+*.ncu-rep
+__pycache__/

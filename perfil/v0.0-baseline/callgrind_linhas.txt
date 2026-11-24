@@ -1,0 +1,819 @@
+--------------------------------------------------------------------------------
+Profile data file '/tmp/tmp.oH6yxIUNiY/callgrind.out' (creator: callgrind-3.18.1)
+--------------------------------------------------------------------------------
+I1 cache: 32768 B, 64 B, 8-way associative
+D1 cache: 49152 B, 64 B, 12-way associative
+LL cache: 25165824 B, 64 B, 12-way associative
+Timerange: Basic block 0 - 1962837585
+Trigger: Program termination
+Profiled target:  ./barenn (PID 128042, part 1)
+Events recorded:  Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Events shown:     Ir Dr D1mr
+Event sort order: Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Thresholds:       99 0 0 0 0 0 0 0 0
+Include dirs:     
+User annotated:   barenn.cpp
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+Ir                      Dr                     D1mr             
+--------------------------------------------------------------------------------
+14,074,530,326 (100.0%) 5,251,931,898 (100.0%) 913,830 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                     Dr                     D1mr              file:function
+--------------------------------------------------------------------------------
+9,520,997,344 (67.65%) 3,808,017,663 (72.51%)       0           barenn.cpp:Barenn::DenseLayer::Backward(std::vector<float, std::allocator<float> >, float) [barenn]
+3,354,534,972 (23.83%) 1,088,334,873 (20.72%)      24 ( 0.00%)  barenn.cpp:Barenn::DenseLayer::Forward(std::vector<float, std::allocator<float> >) [barenn]
+  188,966,340 ( 1.34%)    59,030,943 ( 1.12%)   7,100 ( 0.78%)  ./malloc/./malloc/malloc.c:_int_free [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  126,664,431 ( 0.90%)    32,412,563 ( 0.62%)      48 ( 0.01%)  ./malloc/./malloc/malloc.c:malloc [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  101,190,987 ( 0.72%)    35,095,140 ( 0.67%)       0           /usr/include/c++/11/bits/stl_vector.h:Barenn::DenseLayer::Backward(std::vector<float, std::allocator<float> >, float)
+   77,133,849 ( 0.55%)    39,550,767 ( 0.75%)       4 ( 0.00%)  /usr/include/c++/11/bits/stl_vector.h:Barenn::DenseLayer::Forward(std::vector<float, std::allocator<float> >)
+   64,825,121 ( 0.46%)    23,572,768 ( 0.45%)      48 ( 0.01%)  ./malloc/./malloc/malloc.c:free [/usr/lib/x86_64-linux-gnu/libc.so.6]
+   64,486,680 ( 0.46%)    13,071,293 ( 0.25%)      30 ( 0.00%)  ./stdlib/./stdlib/strtod_l.c:____strtof_l_internal [/usr/lib/x86_64-linux-gnu/libc.so.6]
+   62,144,136 ( 0.44%)    20,008,578 ( 0.38%)      10 ( 0.00%)  ???:std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::_M_extract_float(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, std::string&) const [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+   37,766,400 ( 0.27%)    11,150,080 ( 0.21%)       3 ( 0.00%)  ???:std::num_get<char, std::istreambuf_iterator<char, std::char_traits<char> > >::do_get(std::istreambuf_iterator<char, std::char_traits<char> >, std::istreambuf_iterator<char, std::char_traits<char> >, std::ios_base&, std::_Ios_Iostate&, float&) const [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+   35,805,076 ( 0.25%)    14,589,538 ( 0.28%)      11 ( 0.00%)  ???:std::istream::sentry::sentry(std::istream&, bool) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+   35,359,128 ( 0.25%)     5,893,188 ( 0.11%)       0           ???:operator new(unsigned long) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+   30,221,890 ( 0.21%)     6,629,254 ( 0.13%)  97,464 (10.67%)  barenn.cpp:main [barenn]
+   28,283,268 ( 0.20%)     8,277,120 ( 0.16%) 787,080 (86.13%)  ./string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:__memcpy_avx_unaligned_erms [/usr/lib/x86_64-linux-gnu/libc.so.6]
+   27,958,942 ( 0.20%)     2,541,873 ( 0.05%)       0           ./string/../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S:__memset_avx2_unaligned_erms [/usr/lib/x86_64-linux-gnu/libc.so.6]
+   19,480,236 ( 0.14%)     1,180,620 ( 0.02%)       0           /usr/include/c++/11/bits/stl_algobase.h:Barenn::DenseLayer::Forward(std::vector<float, std::allocator<float> >)
+   18,717,523 ( 0.13%)     5,459,349 ( 0.10%)     102 ( 0.01%)  /usr/include/c++/11/bits/stl_vector.h:main
+   16,904,960 ( 0.12%)     6,114,560 ( 0.12%)      10 ( 0.00%)  ???:std::istream& std::istream::_M_extract<float>(float&) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+   14,622,975 ( 0.10%)     2,924,595 ( 0.06%)       0           /usr/include/c++/11/bits/stl_algobase.h:Barenn::DenseLayer::Backward(std::vector<float, std::allocator<float> >, float)
+   12,229,120 ( 0.09%)     4,675,840 ( 0.09%)       0           ???:std::basic_istream<char, std::char_traits<char> >& std::operator>><char, std::char_traits<char> >(std::basic_istream<char, std::char_traits<char> >&, char&) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+   12,229,120 ( 0.09%)     4,316,160 ( 0.08%)       5 ( 0.00%)  ???:void std::__convert_to_v<float>(char const*, float&, std::_Ios_Iostate&, __locale_struct* const&) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+   12,054,900 ( 0.09%)     3,653,000 ( 0.07%)       0           ???:0x000000000012faf0 [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+   10,790,400 ( 0.08%)     3,956,480 ( 0.08%)       4 ( 0.00%)  ???:std::string::reserve(unsigned long) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+   10,373,862 ( 0.07%)     2,489,972 ( 0.05%)       4 ( 0.00%)  ./stdlib/./stdlib/strtod_l.c:str_to_mpn.constprop.0 [/usr/lib/x86_64-linux-gnu/libc.so.6]
+   10,120,935 ( 0.07%)     1,840,170 ( 0.04%)       0           ./stdlib/./stdlib/strtod_l.c:round_and_return [/usr/lib/x86_64-linux-gnu/libc.so.6]
+    8,992,000 ( 0.06%)     2,517,760 ( 0.05%)       0           ???:std::string::_Rep::_M_clone(std::allocator<char> const&, unsigned long) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+    8,839,785 ( 0.06%)             .                .           ./malloc/./malloc/arena.c:free
+    7,672,560 ( 0.05%)     3,288,240 ( 0.06%)      15 ( 0.00%)  ???:0x000000000012b240 [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+    7,328,510 ( 0.05%)     2,568,351 ( 0.05%)       6 ( 0.00%)  barenn.cpp:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) [barenn]
+    7,193,600 ( 0.05%)       719,360 ( 0.01%)       0           ???:std::string::_Rep::_S_create(unsigned long, unsigned long, std::allocator<char> const&) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+
+--------------------------------------------------------------------------------
+-- Auto-annotated source: /usr/include/c++/11/bits/stl_vector.h
+--------------------------------------------------------------------------------
+Ir                   Dr                  D1mr           
+
+-- line 89 ----------------------------------------
+          .                   .              .                  	pointer;
+          .                   .              .           
+          .                   .              .                 struct _Vector_impl_data
+          .                   .              .                 {
+          .                   .              .           	pointer _M_start;
+          .                   .              .           	pointer _M_finish;
+          .                   .              .           	pointer _M_end_of_storage;
+          .                   .              .           
+  1,169,838 ( 0.01%)          .              .           	_Vector_impl_data() _GLIBCXX_NOEXCEPT
+  7,068,929 ( 0.05%)          2 ( 0.00%)     0           	: _M_start(), _M_finish(), _M_end_of_storage()
+          .                   .              .           	{ }
+          .                   .              .           
+          .                   .              .           #if __cplusplus >= 201103L
+          .                   .              .           	_Vector_impl_data(_Vector_impl_data&& __x) noexcept
+     47,048 ( 0.00%)     23,524 ( 0.00%) 1,031 ( 0.11%)  	: _M_start(__x._M_start), _M_finish(__x._M_finish),
+     23,524 ( 0.00%)     11,762 ( 0.00%) 1,709 ( 0.19%)  	  _M_end_of_storage(__x._M_end_of_storage)
+         75 ( 0.00%)          0              .           	{ __x._M_start = __x._M_finish = __x._M_end_of_storage = pointer(); }
+          .                   .              .           #endif
+          .                   .              .           
+          .                   .              .           	void
+          .                   .              .           	_M_copy_data(_Vector_impl_data const& __x) _GLIBCXX_NOEXCEPT
+          .                   .              .           	{
+          .                   .              .           	  _M_start = __x._M_start;
+          .                   .              .           	  _M_finish = __x._M_finish;
+          .                   .              .           	  _M_end_of_storage = __x._M_end_of_storage;
+-- line 113 ----------------------------------------
+-- line 325 ----------------------------------------
+          .                   .              .                 }
+          .                   .              .           # endif
+          .                   .              .           
+          .                   .              .                 _Vector_base(const allocator_type& __a, _Vector_base&& __x)
+          .                   .              .                 : _M_impl(_Tp_alloc_type(__a), std::move(__x._M_impl))
+          .                   .              .                 { }
+          .                   .              .           #endif
+          .                   .              .           
+          1 ( 0.00%)          0              .                 ~_Vector_base() _GLIBCXX_NOEXCEPT
+          .                   .              .                 {
+          .                   .              .           	_M_deallocate(_M_impl._M_start,
+  7,055,959 ( 0.05%)  3,923,482 ( 0.07%) 2,822 ( 0.31%)  		      _M_impl._M_end_of_storage - _M_impl._M_start);
+          .                   .              .                 }
+          .                   .              .           
+          .                   .              .               public:
+          .                   .              .                 _Vector_impl _M_impl;
+          .                   .              .           
+          .                   .              .                 pointer
+          .                   .              .                 _M_allocate(size_t __n)
+          .                   .              .                 {
+          .                   .              .           	typedef __gnu_cxx::__alloc_traits<_Tp_alloc_type> _Tr;
+  5,550,738 ( 0.04%)    194,976 ( 0.00%)     0           	return __n != 0 ? _Tr::allocate(_M_impl, __n) : pointer();
+          .                   .              .                 }
+          .                   .              .           
+          .                   .              .                 void
+          2 ( 0.00%)          .              .                 _M_deallocate(pointer __p, size_t __n)
+          .                   .              .                 {
+          .                   .              .           	typedef __gnu_cxx::__alloc_traits<_Tp_alloc_type> _Tr;
+  5,102,852 ( 0.04%)          6 ( 0.00%)     0           	if (__p)
+          .                   .              .           	  _Tr::deallocate(_M_impl, __p, __n);
+          .                   .              .                 }
+          .                   .              .           
+          .                   .              .               protected:
+          .                   .              .                 void
+          .                   .              .                 _M_create_storage(size_t __n)
+          .                   .              .                 {
+  2,541,905 ( 0.02%)          0              0           	this->_M_impl._M_start = this->_M_allocate(__n);
+    586,722 ( 0.00%)          0              .           	this->_M_impl._M_finish = this->_M_impl._M_start;
+  6,253,652 ( 0.04%)    584,919 ( 0.01%)     0           	this->_M_impl._M_end_of_storage = this->_M_impl._M_start + __n;
+          .                   .              .                 }
+          .                   .              .               };
+          .                   .              .           
+          .                   .              .             /**
+          .                   .              .              *  @brief A standard container which offers fixed time access to
+          .                   .              .              *  individual elements in any order.
+          .                   .              .              *
+          .                   .              .              *  @ingroup sequences
+-- line 371 ----------------------------------------
+-- line 549 ----------------------------------------
+          .                   .              .                  *
+          .                   .              .                  *  The newly-created %vector uses a copy of the allocator object used
+          .                   .              .                  *  by @a __x (unless the allocator traits dictate a different object).
+          .                   .              .                  */
+          .                   .              .                 vector(const vector& __x)
+          .                   .              .                 : _Base(__x.size(),
+          .                   .              .           	_Alloc_traits::_S_select_on_copy(__x._M_get_Tp_allocator()))
+          .                   .              .                 {
+    195,031 ( 0.00%)          0              .           	this->_M_impl._M_finish =
+          .                   .              .           	  std::__uninitialized_copy_a(__x.begin(), __x.end(),
+          .                   .              .           				      this->_M_impl._M_start,
+          .                   .              .           				      _M_get_Tp_allocator());
+          .                   .              .                 }
+          .                   .              .           
+          .                   .              .           #if __cplusplus >= 201103L
+          .                   .              .                 /**
+          .                   .              .                  *  @brief  %Vector move constructor.
+-- line 565 ----------------------------------------
+-- line 670 ----------------------------------------
+          .                   .              .           #endif
+          .                   .              .           
+          .                   .              .                 /**
+          .                   .              .                  *  The dtor only erases the elements, and note that if the
+          .                   .              .                  *  elements themselves are pointers, the pointed-to memory is
+          .                   .              .                  *  not touched in any way.  Managing the pointer is the user's
+          .                   .              .                  *  responsibility.
+          .                   .              .                  */
+         10 ( 0.00%)          0              0                 ~vector() _GLIBCXX_NOEXCEPT
+          .                   .              .                 {
+         10 ( 0.00%)         10 ( 0.00%)     .           	std::_Destroy(this->_M_impl._M_start, this->_M_impl._M_finish,
+          .                   .              .           		      _M_get_Tp_allocator());
+          .                   .              .           	_GLIBCXX_ASAN_ANNOTATE_BEFORE_DEALLOC;
+          8 ( 0.00%)          6 ( 0.00%)     .                 }
+        107 ( 0.00%)         33 ( 0.00%)     2 ( 0.00%)  => /usr/include/c++/11/bits/stl_vector.h:std::_Vector_base<float, std::allocator<float> >::~_Vector_base() (1x)
+          .                   .              .           
+          .                   .              .                 /**
+          .                   .              .                  *  @brief  %Vector assignment operator.
+          .                   .              .                  *  @param  __x  A %vector of identical element and allocator types.
+          .                   .              .                  *
+          .                   .              .                  *  All the elements of @a __x are copied, but any unused capacity in
+          .                   .              .                  *  @a __x will not be copied.
+          .                   .              .                  *
+-- line 691 ----------------------------------------
+-- line 910 ----------------------------------------
+          .                   .              .                 const_reverse_iterator
+          .                   .              .                 crend() const noexcept
+          .                   .              .                 { return const_reverse_iterator(begin()); }
+          .                   .              .           #endif
+          .                   .              .           
+          .                   .              .                 // [23.2.4.2] capacity
+          .                   .              .                 /**  Returns the number of elements in the %vector.  */
+          .                   .              .                 size_type
+         25 ( 0.00%)         25 ( 0.00%)     .                 size() const _GLIBCXX_NOEXCEPT
+  8,388,219 ( 0.06%)  4,134,325 ( 0.08%)   103 ( 0.01%)        { return size_type(this->_M_impl._M_finish - this->_M_impl._M_start); }
+          .                   .              .           
+          .                   .              .                 /**  Returns the size() of the largest possible %vector.  */
+          .                   .              .                 size_type
+          .                   .              .                 max_size() const _GLIBCXX_NOEXCEPT
+          .                   .              .                 { return _S_max_size(_M_get_Tp_allocator()); }
+          .                   .              .           
+          .                   .              .           #if __cplusplus >= 201103L
+          .                   .              .                 /**
+-- line 927 ----------------------------------------
+-- line 931 ----------------------------------------
+          .                   .              .                  *  This function will %resize the %vector to the specified
+          .                   .              .                  *  number of elements.  If the number is smaller than the
+          .                   .              .                  *  %vector's current size the %vector is truncated, otherwise
+          .                   .              .                  *  default constructed elements are appended.
+          .                   .              .                  */
+          .                   .              .                 void
+          .                   .              .                 resize(size_type __new_size)
+          .                   .              .                 {
+  1,180,620 ( 0.01%)          0              0           	if (__new_size > size())
+          9 ( 0.00%)          0              0           	  _M_default_append(__new_size - size());
+        560 ( 0.00%)        117 ( 0.00%)     2 ( 0.00%)  => /usr/include/c++/11/bits/vector.tcc:std::vector<float, std::allocator<float> >::_M_default_append(unsigned long) (3x)
+    590,307 ( 0.00%)          .              .           	else if (__new_size < size())
+          .                   .              .           	  _M_erase_at_end(this->_M_impl._M_start + __new_size);
+          .                   .              .                 }
+          .                   .              .           
+          .                   .              .                 /**
+          .                   .              .                  *  @brief  Resizes the %vector to the specified number of elements.
+          .                   .              .                  *  @param  __new_size  Number of elements the %vector should contain.
+          .                   .              .                  *  @param  __x  Data with which new elements should be populated.
+          .                   .              .                  *
+-- line 949 ----------------------------------------
+-- line 992 ----------------------------------------
+          .                   .              .           
+          .                   .              .                 /**
+          .                   .              .                  *  Returns the total number of elements that the %vector can
+          .                   .              .                  *  hold before needing to allocate more memory.
+          .                   .              .                  */
+          .                   .              .                 size_type
+          .                   .              .                 capacity() const _GLIBCXX_NOEXCEPT
+          .                   .              .                 { return size_type(this->_M_impl._M_end_of_storage
+  1,770,930 ( 0.01%)  1,180,620 ( 0.02%)     1 ( 0.00%)  			 - this->_M_impl._M_start); }
+          .                   .              .           
+          .                   .              .                 /**
+          .                   .              .                  *  Returns true if the %vector is empty.  (Thus begin() would
+          .                   .              .                  *  equal end().)
+          .                   .              .                  */
+          .                   .              .                 _GLIBCXX_NODISCARD bool
+          .                   .              .                 empty() const _GLIBCXX_NOEXCEPT
+          .                   .              .                 { return begin() == end(); }
+-- line 1008 ----------------------------------------
+-- line 1038 ----------------------------------------
+          .                   .              .                  *  Note that data access with this operator is unchecked and
+          .                   .              .                  *  out_of_range lookups are not defined. (For checked lookups
+          .                   .              .                  *  see at().)
+          .                   .              .                  */
+          .                   .              .                 reference
+          .                   .              .                 operator[](size_type __n) _GLIBCXX_NOEXCEPT
+          .                   .              .                 {
+          .                   .              .           	__glibcxx_requires_subscript(__n);
+141,898,119 ( 1.01%) 69,928,821 ( 1.33%)     3 ( 0.00%)  	return *(this->_M_impl._M_start + __n);
+          .                   .              .                 }
+          .                   .              .           
+          .                   .              .                 /**
+          .                   .              .                  *  @brief  Subscript access to the data contained in the %vector.
+          .                   .              .                  *  @param __n The index of the element for which data should be
+          .                   .              .                  *  accessed.
+          .                   .              .                  *  @return  Read-only (constant) reference to data.
+          .                   .              .                  *
+-- line 1054 ----------------------------------------
+-- line 1056 ----------------------------------------
+          .                   .              .                  *  Note that data access with this operator is unchecked and
+          .                   .              .                  *  out_of_range lookups are not defined. (For checked lookups
+          .                   .              .                  *  see at().)
+          .                   .              .                  */
+          .                   .              .                 const_reference
+          .                   .              .                 operator[](size_type __n) const _GLIBCXX_NOEXCEPT
+          .                   .              .                 {
+          .                   .              .           	__glibcxx_requires_subscript(__n);
+    395,337 ( 0.00%)    196,770 ( 0.00%)     .           	return *(this->_M_impl._M_start + __n);
+          .                   .              .                 }
+          .                   .              .           
+          .                   .              .               protected:
+          .                   .              .                 /// Safety check used only from at().
+          .                   .              .                 void
+          .                   .              .                 _M_range_check(size_type __n) const
+          .                   .              .                 {
+          .                   .              .           	if (__n >= this->size())
+-- line 1072 ----------------------------------------
+-- line 1587 ----------------------------------------
+          .                   .              .           					_M_get_Tp_allocator());
+          .                   .              .           	}
+          .                   .              .           
+          .                   .              .                 // Called by the first initialize_dispatch above and by the
+          .                   .              .                 // vector(n,value,a) constructor.
+          .                   .              .                 void
+          .                   .              .                 _M_fill_initialize(size_type __n, const value_type& __value)
+          .                   .              .                 {
+          6 ( 0.00%)          0              .           	this->_M_impl._M_finish =
+          .                   .              .           	  std::__uninitialized_fill_n_a(this->_M_impl._M_start, __n, __value,
+          .                   .              .           					_M_get_Tp_allocator());
+          .                   .              .                 }
+          .                   .              .           
+          .                   .              .           #if __cplusplus >= 201103L
+          .                   .              .                 // Called by the vector(n) constructor.
+          .                   .              .                 void
+          .                   .              .                 _M_default_initialize(size_type __n)
+          .                   .              .                 {
+  1,760,153 ( 0.01%)          1 ( 0.00%)     .           	this->_M_impl._M_finish =
+          .                   .              .           	  std::__uninitialized_default_n_a(this->_M_impl._M_start, __n,
+          .                   .              .           					   _M_get_Tp_allocator());
+          .                   .              .                 }
+          .                   .              .           #endif
+          .                   .              .           
+          .                   .              .                 // Internal assign functions follow.  The *_aux functions do the actual
+          .                   .              .                 // assignment work for the range versions.
+          .                   .              .           
+-- line 1613 ----------------------------------------
+-- line 1750 ----------------------------------------
+          .                   .              .                 _M_emplace_aux(const_iterator __position, value_type&& __v)
+          .                   .              .                 { return _M_insert_rval(__position, std::move(__v)); }
+          .                   .              .           #endif
+          .                   .              .           
+          .                   .              .                 // Called by _M_fill_insert, _M_insert_aux etc.
+          .                   .              .                 size_type
+          .                   .              .                 _M_check_len(size_type __n, const char* __s) const
+          .                   .              .                 {
+    393,734 ( 0.00%)          0              0           	if (max_size() - size() < __n)
+          .                   .              .           	  __throw_length_error(__N(__s));
+          .                   .              .           
+          .                   .              .           	const size_type __len = size() + (std::max)(size(), __n);
+     78,730 ( 0.00%)          0              0           	return (__len < size() || __len > max_size()) ? max_size() : __len;
+          .                   .              .                 }
+          .                   .              .           
+          .                   .              .                 // Called by constructors to check initial size.
+          .                   .              .                 static size_type
+          .                   .              .                 _S_check_init_len(size_type __n, const allocator_type& __a)
+          .                   .              .                 {
+  5,865,381 ( 0.04%)          0              0           	if (__n > _S_max_size(_Tp_alloc_type(__a)))
+          .                   .              .           	  __throw_length_error(
+          .                   .              .           	      __N("cannot create std::vector larger than max_size()"));
+          .                   .              .           	return __n;
+          .                   .              .                 }
+          .                   .              .           
+          .                   .              .                 static size_type
+          .                   .              .                 _S_max_size(const _Tp_alloc_type& __a) _GLIBCXX_NOEXCEPT
+          .                   .              .                 {
+-- line 1777 ----------------------------------------
+
+--------------------------------------------------------------------------------
+-- Auto-annotated source: /usr/include/c++/11/bits/stl_algobase.h
+--------------------------------------------------------------------------------
+Ir                  Dr                 D1mr       
+
+-- line 251 ----------------------------------------
+         .                  .          .             template<typename _Tp>
+         .                  .          .               _GLIBCXX14_CONSTEXPR
+         .                  .          .               inline const _Tp&
+         .                  .          .               max(const _Tp& __a, const _Tp& __b)
+         .                  .          .               {
+         .                  .          .                 // concept requirements
+         .                  .          .                 __glibcxx_function_requires(_LessThanComparableConcept<_Tp>)
+         .                  .          .                 //return  __a < __b ? __b : __a;
+   590,310 ( 0.00%)         .          .                 if (__a < __b)
+         .                  .          .           	return __b;
+ 9,444,960 ( 0.07%)         .          .                 return __a;
+         .                  .          .               }
+         .                  .          .           
+         .                  .          .             /**
+         .                  .          .              *  @brief This does what you think it does.
+         .                  .          .              *  @ingroup sorting_algorithms
+         .                  .          .              *  @param  __a  A thing of arbitrary type.
+         .                  .          .              *  @param  __b  Another thing of arbitrary type.
+         .                  .          .              *  @param  __comp  A @link comparison_functors comparison functor@endlink.
+-- line 269 ----------------------------------------
+-- line 421 ----------------------------------------
+         .                  .          .           	{
+         .                  .          .           #if __cplusplus >= 201103L
+         .                  .          .           	  using __assignable = conditional<_IsMove,
+         .                  .          .           					   is_move_assignable<_Tp>,
+         .                  .          .           					   is_copy_assignable<_Tp>>;
+         .                  .          .           	  // trivial types can have deleted assignment
+         .                  .          .           	  static_assert( __assignable::type::value, "type is not assignable" );
+         .                  .          .           #endif
+ 1,173,451 ( 0.01%)         0          0           	  const ptrdiff_t _Num = __last - __first;
+ 2,354,183 ( 0.02%)         0          0           	  if (_Num)
+ 5,092,988 ( 0.04%)   390,005 ( 0.01%) 0           	    __builtin_memmove(__result, __first, sizeof(_Tp) * _Num);
+13,648,110 ( 0.10%) 4,289,406 ( 0.08%) 779,892 (85.34%)  => ???:0x000000000010b780 (584,919x)
+ 2,729,622 ( 0.02%)   779,892 ( 0.01%) .           => ???:0x000000000010b590 (194,973x)
+ 1,173,445 ( 0.01%)         0          .           	  return __result + _Num;
+         .                  .          .           	}
+         .                  .          .               };
+         .                  .          .           
+         .                  .          .           _GLIBCXX_BEGIN_NAMESPACE_CONTAINER
+         .                  .          .           
+         .                  .          .             template<typename _Tp, typename _Ref, typename _Ptr>
+         .                  .          .               struct _Deque_iterator;
+         .                  .          .           
+-- line 440 ----------------------------------------
+-- line 733 ----------------------------------------
+         .                  .          .           #if __cplusplus >= 201103L
+         .                  .          .           	  using __assignable = conditional<_IsMove,
+         .                  .          .           					   is_move_assignable<_Tp>,
+         .                  .          .           					   is_copy_assignable<_Tp>>;
+         .                  .          .           	  // trivial types can have deleted assignment
+         .                  .          .           	  static_assert( __assignable::type::value, "type is not assignable" );
+         .                  .          .           #endif
+         .                  .          .           	  const ptrdiff_t _Num = __last - __first;
+        14 ( 0.00%)         .          .           	  if (_Num)
+        35 ( 0.00%)         0          .           	    __builtin_memmove(__result - _Num, __first, sizeof(_Tp) * _Num);
+       106 ( 0.00%)        31 ( 0.00%) .           => ???:0x000000000010b780 (7x)
+         .                  .          .           	  return __result - _Num;
+         .                  .          .           	}
+         .                  .          .               };
+         .                  .          .           
+         .                  .          .             template<bool _IsMove, typename _BI1, typename _BI2>
+         .                  .          .               _GLIBCXX20_CONSTEXPR
+         .                  .          .               inline _BI2
+         .                  .          .               __copy_move_backward_a2(_BI1 __first, _BI1 __last, _BI2 __result)
+-- line 750 ----------------------------------------
+-- line 915 ----------------------------------------
+         .                  .          .             template<typename _ForwardIterator, typename _Tp>
+         .                  .          .               _GLIBCXX20_CONSTEXPR
+         .                  .          .               inline typename
+         .                  .          .               __gnu_cxx::__enable_if<__is_scalar<_Tp>::__value, void>::__type
+         .                  .          .               __fill_a1(_ForwardIterator __first, _ForwardIterator __last,
+         .                  .          .           	      const _Tp& __value)
+         .                  .          .               {
+         .                  .          .                 const _Tp __tmp = __value;
+ 3,520,307 ( 0.03%)         .          .                 for (; __first != __last; ++__first)
+14,075,851 ( 0.10%) 4,105,221 ( 0.08%) 0           	*__first = __tmp;
+        49 ( 0.00%)         7 ( 0.00%) .           => ???:0x000000000010b520 (3x)
+         .                  .          .               }
+         .                  .          .           
+         .                  .          .             // Specialization: for char types we can use memset.
+         .                  .          .             template<typename _Tp>
+         .                  .          .               _GLIBCXX20_CONSTEXPR
+         .                  .          .               inline typename
+         .                  .          .               __gnu_cxx::__enable_if<__is_byte<_Tp>::__value, void>::__type
+         .                  .          .               __fill_a1(_Tp* __first, _Tp* __last, const _Tp& __c)
+-- line 932 ----------------------------------------
+-- line 1107 ----------------------------------------
+         .                  .          .               _GLIBCXX20_CONSTEXPR
+         .                  .          .               inline _OutputIterator
+         .                  .          .               __fill_n_a(_OutputIterator __first, _Size __n, const _Tp& __value,
+         .                  .          .           	       std::random_access_iterator_tag)
+         .                  .          .               {
+         .                  .          .           #if __cplusplus >= 201103L
+         .                  .          .                 static_assert(is_integral<_Size>{}, "fill_n must pass integral size");
+         .                  .          .           #endif
+ 3,520,320 ( 0.03%)         0          .                 if (__n <= 0)
+         .                  .          .           	return __first;
+         .                  .          .           
+         .                  .          .                 __glibcxx_requires_can_increment(__first, __n);
+         .                  .          .           
+         3 ( 0.00%)         .          .                 std::__fill_a(__first, __first + __n, __value);
+         .                  .          .                 return __first + __n;
+         .                  .          .               }
+         .                  .          .           
+         .                  .          .             /**
+         .                  .          .              *  @brief Fills the range [first,first+n) with copies of value.
+         .                  .          .              *  @ingroup mutating_algorithms
+         .                  .          .              *  @param  __first  An output iterator.
+         .                  .          .              *  @param  __n      The count of copies to perform.
+-- line 1128 ----------------------------------------
+
+--------------------------------------------------------------------------------
+-- User-annotated source: barenn.cpp
+--------------------------------------------------------------------------------
+Ir                     Dr                     D1mr            
+
+-- line 17 ----------------------------------------
+            .                      .               .           using namespace std;
+            .                      .               .           
+            .                      .               .           namespace Barenn {
+            .                      .               .           
+            .                      .               .           // Cada imagem tem 64 atributos e pertence a uma das dez classes.
+            .                      .               .           constexpr int entradas = 64;
+            .                      .               .           constexpr int classes = 10;
+            .                      .               .           
+           24 ( 0.00%)             9 ( 0.00%)      0           class DenseLayer {
+            .                      .               .               int in_features;
+            .                      .               .               int out_features;
+            .                      .               .               bool final;
+            .                      .               .               // weights[i][j] liga a entrada j ao neurônio de saída i.
+            .                      .               .               vector<vector<float>> weights;
+            .                      .               .               vector<float> bias;
+            .                      .               .               // Dados do último forward usados para calcular os gradientes.
+            .                      .               .               vector<float> last_input;
+            .                      .               .               vector<float> last_z;
+            .                      .               .           
+            .                      .               .           public:
+           42 ( 0.00%)             3 ( 0.00%)      0               DenseLayer(int input_size, int output_size, bool is_final = false)
+            9 ( 0.00%)             0               0                   : in_features(input_size), out_features(output_size), final(is_final),
+           12 ( 0.00%)             0               .                     weights(output_size, vector<float>(input_size)), bias(output_size, 0) {
+            .                      .               .                   // A semente fixa torna a inicialização de cada camada reproduzível.
+            .                      .               .                   mt19937 gen(1337);
+            .                      .               .                   uniform_real_distribution<float> distribution(-0.05f, 0.05f);
+          189 ( 0.00%)             3 ( 0.00%)      0                   for (auto& row : weights) {
+        8,276 ( 0.00%)             .               .                       for (float& weight : row) {
+        2,720 ( 0.00%)             0               .                           weight = distribution(gen);
+            .                      .               .                       }
+            .                      .               .                   }
+           33 ( 0.00%)            27 ( 0.00%)      .               }
+            .                      .               .           
+    6,493,410 ( 0.05%)             0               0               vector<float> Forward(vector<float> input) {
+      590,310 ( 0.00%)             .               .                   last_input = input;
+    1,180,623 ( 0.01%)       590,310 ( 0.01%)      .                   last_z.resize(out_features);
+            9 ( 0.00%)             3 ( 0.00%)      .                   vector<float> out(out_features);
+            .                      .               .                   // Cada neurônio soma o viés aos produtos entre entradas e pesos.
+   47,421,570 ( 0.34%)       590,310 ( 0.01%)      .                   for (int i = 0; i < out_features; ++i) {
+   11,412,660 ( 0.08%)    11,412,660 ( 0.22%)      1 ( 0.00%)              float sum = bias[i];
+1,630,239,450 (11.58%)       590,310 ( 0.01%)      .                       for (int j = 0; j < in_features; ++j) {
+1,605,643,200 (11.41%) 1,070,428,800 (20.38%)     23 ( 0.00%)                  sum += input[j] * weights[i][j];
+            .                      .               .                       }
+   11,412,660 ( 0.08%)             0               0                       last_z[i] = sum;
+            .                      .               .                       // As camadas ocultas usam ReLU. A última devolve escores lineares.
+   34,828,290 ( 0.25%)       590,310 ( 0.01%)      0                       out[i] = final ? sum : max(0.0f, sum);
+            .                      .               .                   }
+            .                      .               .                   return out;
+    5,312,790 ( 0.04%)     4,132,170 ( 0.08%)      .               }
+            .                      .               .           
+    7,019,028 ( 0.05%)       584,919 ( 0.01%)      0               vector<float> Backward(vector<float> grad_out, float learning_rate) {
+            .                      .               .                   // Delta é o gradiente da perda em relação à soma antes da ativação.
+            .                      .               .                   // Na ReLU, o gradiente passa apenas quando essa soma é positiva.
+      584,919 ( 0.00%)       584,919 ( 0.01%)      .                   vector<float> delta(out_features);
+   36,264,978 ( 0.26%)       584,919 ( 0.01%)      .                   for (int i = 0; i < out_features; ++i) {
+   51,938,626 ( 0.37%)    11,893,353 ( 0.23%)      .                       delta[i] = final ? grad_out[i]
+   38,604,654 ( 0.27%)    18,717,408 ( 0.36%)      0                                        : grad_out[i] * (last_z[i] > 0.0f ? 1.0f : 0.0f);
+            .                      .               .                   }
+            .                      .               .           
+            .                      .               .                   // O gradiente da entrada usa os pesos anteriores à atualização.
+      584,919 ( 0.00%)       584,919 ( 0.01%)      .                   vector<float> grad_in(in_features);
+   71,360,118 ( 0.51%)       584,919 ( 0.01%)      .                   for (int i = 0; i < in_features; ++i) {
+   65,510,928 ( 0.47%)             .               .                       float sum = 0;
+2,186,817,168 (15.54%)    21,836,976 ( 0.42%)      0                       for (int j = 0; j < out_features; ++j) {
+2,121,306,240 (15.07%) 1,590,979,680 (30.29%)      .                           sum += delta[j] * weights[j][i];
+            .                      .               .                       }
+   21,836,976 ( 0.16%)             0               .                       grad_in[i] = sum;
+            .                      .               .                   }
+            .                      .               .           
+            .                      .               .                   // SGD por amostra. O gradiente do peso é delta vezes a entrada.
+            .                      .               .                   // O gradiente do viés é o próprio delta.
+   60,051,684 ( 0.43%)     1,169,838 ( 0.02%)      0                   for (int i = 0; i < out_features; ++i) {
+1,613,596,548 (11.46%)             .               .                       for (int j = 0; j < in_features; ++j) {
+3,181,959,360 (22.61%) 2,121,306,240 (40.39%)      0                           weights[i][j] -= learning_rate * (delta[i] * last_input[j]);
+            .                      .               .                       }
+   56,542,170 ( 0.40%)    33,925,302 ( 0.65%)      0                       bias[i] -= learning_rate * delta[i];
+            .                      .               .                   }
+            .                      .               .                   return grad_in;
+    7,019,028 ( 0.05%)     5,264,271 ( 0.10%)      .               }
+            .                      .               .           
+            .                      .               .               // Grava pesos (linha a linha) e vieses em binário para validar a
+            .                      .               .               // corretude bit a bit entre versões.
+            .                      .               .               void Salvar(ostream& saida) const {
+            .                      .               .                   for (const auto& row : weights) {
+            .                      .               .                       saida.write(reinterpret_cast<const char*>(row.data()),
+            .                      .               .                                   row.size() * sizeof(float));
+            .                      .               .                   }
+            .                      .               .                   saida.write(reinterpret_cast<const char*>(bias.data()),
+            .                      .               .                               bias.size() * sizeof(float));
+            .                      .               .               }
+            .                      .               .           };
+            .                      .               .           
+       23,524 ( 0.00%)        11,762 ( 0.00%)      .           struct Amostra {
+            .                      .               .               vector<float> imagem;
+            .                      .               .               int rotulo;
+            .                      .               .           };
+            .                      .               .           
+           28 ( 0.00%)             2 ( 0.00%)      0           vector<Amostra> ler_dados(const string& caminho) {
+            .                      .               .               ifstream arquivo(caminho);
+            4 ( 0.00%)             2 ( 0.00%)      .               if (!arquivo) {
+            .                      .               .                   throw runtime_error("Não foi possível abrir " + caminho);
+            .                      .               .               }
+            .                      .               .           
+            .                      .               .               vector<Amostra> dados;
+            .                      .               .               string linha;
+            6 ( 0.00%)             0               .               size_t numero_linha = 0;
+       16,866 ( 0.00%)        11,244 ( 0.00%)      0               while (getline(arquivo, linha)) {
+        5,620 ( 0.00%)             0               .                   ++numero_linha;
+            .                      .               .                   istringstream campos(linha);
+        5,620 ( 0.00%)             0               0                   Amostra amostra{};
+            .                      .               .                   // Cada atributo deve ser seguido por vírgula, inclusive o último.
+      736,220 ( 0.01%)         5,620 ( 0.00%)      .                   for (int i = 0; i < entradas; ++i) {
+            .                      .               .                       float valor;
+            .                      .               .                       char separador;
+    2,877,440 ( 0.02%)     1,079,040 ( 0.02%)      4 ( 0.00%)              if (!(campos >> valor >> separador) || separador != ',' ||
+   31,292,160 ( 0.22%)    12,588,800 ( 0.24%)      0           => ???:0x000000000010b6c0 (359,680x)
+    2,877,440 ( 0.02%)     1,079,040 ( 0.02%)      0                           !isfinite(valor) || valor < 0 || valor > 16) {
+            .                      .               .                           break;
+            .                      .               .                       }
+            .                      .               .                       // Converte os valores de [0, 16] para [0, 1].
+      719,360 ( 0.01%)       359,680 ( 0.01%)      .                       amostra.imagem.push_back(valor / 16.0f);
+            .                      .               .                   }
+            .                      .               .                   // Depois dos atributos, deve restar apenas o rótulo de 0 a 9.
+       11,240 ( 0.00%)         5,620 ( 0.00%)      .                   if (amostra.imagem.size() != entradas ||
+       28,100 ( 0.00%)         5,620 ( 0.00%)      0                       !(campos >> amostra.rotulo) ||
+    2,256,298 ( 0.02%)       707,082 ( 0.01%)     26 ( 0.00%)  => ???:0x000000000010b530 (5,620x)
+       33,720 ( 0.00%)        11,240 ( 0.00%)      0                       amostra.rotulo < 0 || amostra.rotulo >= classes ||
+        5,620 ( 0.00%)         5,620 ( 0.00%)      .                       !(campos >> ws).eof()) {
+            .                      .               .                       throw runtime_error(caminho + ":" + to_string(numero_linha) +
+            .                      .               .                           " — esperados 64 atributos de 0 a 16 e um rótulo inteiro de 0 a 9");
+            .                      .               .                   }
+            .                      .               .                   dados.push_back(move(amostra));
+            .                      .               .               }
+           12 ( 0.00%)             8 ( 0.00%)      0               if (arquivo.bad() || dados.empty()) {
+            .                      .               .                   throw runtime_error("Falha de leitura ou arquivo vazio: " + caminho);
+            .                      .               .               }
+            .                      .               .               return dados;
+           24 ( 0.00%)            20 ( 0.00%)      2 ( 0.00%)  }
+            .                      .               .           
+            .                      .               .           // Calcula metade da soma dos erros quadráticos. O alvo vale 1 para a
+            .                      .               .           // classe correta e 0 para as demais. O erro também é a derivada por escore.
+            .                      .               .           float perda(const vector<float>& escores, int rotulo,
+            .                      .               .                       vector<float>* gradiente = nullptr) {
+      391,743 ( 0.00%)             .               .               float total = 0;
+    5,903,100 ( 0.04%)             .               .               for (int i = 0; i < classes; ++i) {
+    6,296,640 ( 0.04%)     2,164,470 ( 0.04%)      0                   float erro = escores[i] - (i == rotulo ? 1.0f : 0.0f);
+    7,870,800 ( 0.06%)     1,967,700 ( 0.04%)      .                   total += 0.5f * erro * erro;
+            .                      .               .                   if (gradiente) {
+    1,949,730 ( 0.01%)             0               .                       (*gradiente)[i] = erro;
+            .                      .               .                   }
+            .                      .               .               }
+            .                      .               .               return total;
+            .                      .               .           }
+            .                      .               .           
+            .                      .               .           void avaliar(DenseLayer& l1, DenseLayer& l2, DenseLayer& l3,
+           15 ( 0.00%)             1 ( 0.00%)      0                        const vector<Amostra>& teste) {
+            .                      .               .               struct Exemplo {
+            .                      .               .                   size_t linha;
+            .                      .               .                   int real;
+            .                      .               .                   int previsto;
+            .                      .               .                   int segundo;
+            .                      .               .                   float maior_escore;
+            .                      .               .                   float segundo_escore;
+            .                      .               .               };
+            .                      .               .           
+            .                      .               .               // Linhas representam a classe esperada e colunas, a classe prevista.
+          104 ( 0.00%)             0               .               array<array<size_t, classes>, classes> confusoes{};
+            .                      .               .               vector<Exemplo> exemplos;
+            1 ( 0.00%)             0               .               size_t acertos = 0;
+            1 ( 0.00%)             0               .               size_t exemplos_acerto = 0;
+            1 ( 0.00%)             0               0               size_t exemplos_erro = 0;
+            3 ( 0.00%)             0               0               double perda_total = 0;
+            .                      .               .           
+            .                      .               .               // Só fazemos forward aqui. Os pesos ficam fixos.
+        3,597 ( 0.00%)         1,798 ( 0.00%)      .               for (size_t i = 0; i < teste.size(); ++i) {
+            .                      .               .                   const auto& amostra = teste[i];
+       30,549 ( 0.00%)         5,391 ( 0.00%)      0                   auto escores = l3.Forward(l2.Forward(l1.Forward(amostra.imagem)));
+   32,130,360 ( 0.23%)    10,449,555 ( 0.20%)     27 ( 0.00%)  => barenn.cpp:Barenn::DenseLayer::Forward(std::vector<float, std::allocator<float> >) (5,391x)
+            .                      .               .                   // O índice do maior escore indica a classe prevista.
+            .                      .               .                   int previsto = static_cast<int>(
+        1,797 ( 0.00%)             .               .                       max_element(escores.begin(), escores.end()) - escores.begin());
+        7,188 ( 0.00%)         1,797 ( 0.00%)    899 ( 0.10%)          bool acertou = previsto == amostra.rotulo;
+        1,797 ( 0.00%)             0               0                   acertos += acertou;
+        8,985 ( 0.00%)             0               0                   ++confusoes[amostra.rotulo][previsto];
+        5,391 ( 0.00%)         1,797 ( 0.00%)      .                   perda_total += perda(escores, amostra.rotulo);
+            .                      .               .           
+            .                      .               .                   // Guarda até três acertos e três erros para ilustrar a saída.
+            .                      .               .                   // A acurácia usa todas as imagens, inclusive as não exibidas.
+       10,702 ( 0.00%)         1,797 ( 0.00%)      0                   size_t& exemplos_tipo = acertou ? exemplos_acerto : exemplos_erro;
+        3,594 ( 0.00%)             .               .                   if (exemplos_tipo < 3) {
+           18 ( 0.00%)             0               0                       int segundo = previsto == 0 ? 1 : 0;
+          180 ( 0.00%)             .               .                       for (int classe = 0; classe < classes; ++classe) {
+          480 ( 0.00%)           114 ( 0.00%)      0                           if (classe != previsto && escores[classe] > escores[segundo]) {
+            .                      .               .                               segundo = classe;
+            .                      .               .                           }
+            .                      .               .                       }
+        1,809 ( 0.00%)             6 ( 0.00%)      .                       exemplos.push_back({i + 1, amostra.rotulo, previsto, segundo,
+            .                      .               .                                           escores[previsto], escores[segundo]});
+           32 ( 0.00%)             6 ( 0.00%)      .                       ++exemplos_tipo;
+            .                      .               .                   }
+            .                      .               .               }
+            .                      .               .           
+            .                      .               .               cout << "\nAVALIACAO FINAL\n"
+           11 ( 0.00%)             2 ( 0.00%)      1 ( 0.00%)           << "Acuracia " << setprecision(1) << 100.0 * acertos / teste.size()
+            .                      .               .                    << "% | " << acertos << " acertos em " << teste.size() << " imagens\n"
+            6 ( 0.00%)             1 ( 0.00%)      0                    << "Perda media " << setprecision(4) << perda_total / teste.size() << "\n";
+            .                      .               .           
+            .                      .               .               cout << "\nALGUMAS INFERENCIAS\n";
+            .                      .               .               cout << "Esperado  Previsto\n";
+            .                      .               .           
+           17 ( 0.00%)             1 ( 0.00%)      0               for (const auto& exemplo : exemplos) {
+            .                      .               .                   cout << right << setw(8) << exemplo.real
+           48 ( 0.00%)            12 ( 0.00%)      3 ( 0.00%)               << "  " << setw(8) << exemplo.previsto << '\n';
+        6,246 ( 0.00%)         1,524 ( 0.00%)      5 ( 0.00%)  => ???:0x000000000010b7c0 (12x)
+            .                      .               .               }
+            .                      .               .           
+            .                      .               .               struct Confusao {
+            .                      .               .                   int real;
+            .                      .               .                   int previsto;
+            .                      .               .                   size_t ocorrencias;
+            .                      .               .               };
+            .                      .               .               vector<Confusao> erros;
+           42 ( 0.00%)             1 ( 0.00%)      0               for (int real = 0; real < classes; ++real) {
+          300 ( 0.00%)             .               .                   for (int previsto = 0; previsto < classes; ++previsto) {
+          560 ( 0.00%)           180 ( 0.00%)      3 ( 0.00%)              if (real != previsto && confusoes[real][previsto] > 0) {
+            .                      .               .                           erros.push_back({real, previsto, confusoes[real][previsto]});
+            .                      .               .                       }
+            .                      .               .                   }
+            .                      .               .               }
+            .                      .               .               // Ordena os pares incorretos do mais frequente para o menos frequente.
+            .                      .               .               stable_sort(erros.begin(), erros.end(), [](const auto& a, const auto& b) {
+           30 ( 0.00%)            30 ( 0.00%)      0                   return a.ocorrencias > b.ocorrencias;
+            .                      .               .               });
+            .                      .               .               cout << "\nCONFUSOES MAIS FREQUENTES\n";
+            .                      .               .           
+            2 ( 0.00%)             .               .               if (erros.empty()) {
+            .                      .               .                   cout << "Nenhuma neste conjunto.\n";
+            .                      .               .               } else {
+            .                      .               .                   cout << "Esperado  Previsto  Ocorrencias\n";
+            .                      .               .           
+           16 ( 0.00%)             0               0                   for (size_t i = 0; i < min<size_t>(3, erros.size()); ++i) {
+            .                      .               .                       const auto& erro = erros[i];
+            .                      .               .                       cout << right << setw(8) << erro.real
+           12 ( 0.00%)             3 ( 0.00%)      .                           << "  " << setw(8) << erro.previsto
+        1,560 ( 0.00%)           381 ( 0.00%)      .           => ???:0x000000000010b7c0 (3x)
+           12 ( 0.00%)             3 ( 0.00%)      .                           << "  " << setw(11) << erro.ocorrencias << '\n';
+        1,560 ( 0.00%)           381 ( 0.00%)      .           => ???:0x000000000010b7c0 (3x)
+            .                      .               .                   }
+            .                      .               .               }
+            7 ( 0.00%)             6 ( 0.00%)      1 ( 0.00%)  }
+            .                      .               .           
+            .                      .               .           } // namespace Barenn
+            .                      .               .           
+            9 ( 0.00%)             0               0           int main(int argc, char** argv) {
+            6 ( 0.00%)             1 ( 0.00%)      .               if (argc != 1 && argc != 3) {
+            .                      .               .                   cerr << "Uso: " << argv[0] << " [arquivo_treino arquivo_teste]\n";
+            .                      .               .                   return 1;
+            .                      .               .               }
+            8 ( 0.00%)             0               0               const string arquivo_treino = argc == 3 ? argv[1] : "optdigits.tra";
+           75 ( 0.00%)            17 ( 0.00%)      3 ( 0.00%)  => /usr/include/c++/11/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (1x)
+            6 ( 0.00%)             1 ( 0.00%)      .               const string arquivo_teste = argc == 3 ? argv[2] : "optdigits.tes";
+           75 ( 0.00%)            17 ( 0.00%)      1 ( 0.00%)  => /usr/include/c++/11/bits/basic_string.h:std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >::basic_string<std::allocator<char> >(char const*, std::allocator<char> const&) (1x)
+            .                      .               .           
+            .                      .               .               try {
+            5 ( 0.00%)             1 ( 0.00%)      0                   const auto treino = Barenn::ler_dados(arquivo_treino);
+  298,226,644 ( 2.12%)    89,030,709 ( 1.70%)  3,469 ( 0.38%)  => barenn.cpp:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (1x)
+            4 ( 0.00%)             0               .                   const auto teste = Barenn::ler_dados(arquivo_teste);
+  140,121,042 ( 1.00%)    41,837,279 ( 0.80%)  1,516 ( 0.17%)  => barenn.cpp:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&) (1x)
+           18 ( 0.00%)             0               0                   if (filesystem::equivalent(arquivo_treino, arquivo_teste)) {
+        2,815 ( 0.00%)           841 ( 0.00%)     82 ( 0.01%)  => ???:0x000000000010b5b0 (1x)
+          806 ( 0.00%)           104 ( 0.00%)      2 ( 0.00%)  => /usr/include/c++/11/bits/fs_path.h:std::filesystem::__cxx11::path::path<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::filesystem::__cxx11::path>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::filesystem::__cxx11::path::format) (2x)
+            .                      .               .                       throw runtime_error("Use arquivos distintos para treino e teste.");
+            .                      .               .                   }
+            .                      .               .           
+            .                      .               .                   constexpr int epocas = 51;
+            .                      .               .                   constexpr float taxa = 0.02f;
+            .                      .               .                   // Rede densa com dimensões 64 -> 32 -> 16 -> 10.
+            7 ( 0.00%)             0               0                   Barenn::DenseLayer l1(Barenn::entradas, 32);
+      122,151 ( 0.00%)        16,327 ( 0.00%)      3 ( 0.00%)  => barenn.cpp:Barenn::DenseLayer::DenseLayer(int, int, bool) (1x)
+            7 ( 0.00%)             0               .                   Barenn::DenseLayer l2(32, 16);
+       37,235 ( 0.00%)         4,944 ( 0.00%)     10 ( 0.00%)  => barenn.cpp:Barenn::DenseLayer::DenseLayer(int, int, bool) (1x)
+            5 ( 0.00%)             1 ( 0.00%)      .                   Barenn::DenseLayer l3(16, Barenn::classes, true);
+       23,385 ( 0.00%)         3,510 ( 0.00%)      2 ( 0.00%)  => barenn.cpp:Barenn::DenseLayer::DenseLayer(int, int, bool) (1x)
+            .                      .               .                   vector<float> gradiente(Barenn::classes);
+           55 ( 0.00%)             1 ( 0.00%)      0                   array<double, epocas> perdas{};
+            .                      .               .           
+            .                      .               .                   // A medição inclui forward, perda e backward de todas as épocas.
+            2 ( 0.00%)             0               .                   const auto inicio = chrono::steady_clock::now();
+          881 ( 0.00%)           288 ( 0.00%)     17 ( 0.00%)  => ???:0x000000000010b6d0 (1x)
+          209 ( 0.00%)            51 ( 0.00%)      0                   for (int epoca = 0; epoca < epocas; ++epoca) {
+           51 ( 0.00%)             0               .                       double perda_total = 0;
+            .                      .               .                       // Uma época percorre todo o conjunto na ordem do arquivo.
+      585,021 ( 0.00%)       194,973 ( 0.00%)      0                       for (const auto& amostra : treino) {
+    3,509,514 ( 0.02%)       584,919 ( 0.01%)      0                           auto escores = l3.Forward(l2.Forward(l1.Forward(amostra.imagem)));
+3,486,118,733 (24.77%) 1,133,768,274 (21.59%)      4 ( 0.00%)  => barenn.cpp:Barenn::DenseLayer::Forward(std::vector<float, std::allocator<float> >) (584,919x)
+      779,892 ( 0.01%)       389,946 ( 0.01%) 97,461 (10.67%)                  perda_total += Barenn::perda(escores, amostra.rotulo, &gradiente);
+            .                      .               .           
+            .                      .               .                           // Propaga o gradiente da última camada até a primeira.
+            .                      .               .                           // Cada Backward também atualiza os parâmetros da sua camada.
+    1,169,838 ( 0.01%)       389,946 ( 0.01%)      0                           auto grad3 = l3.Backward(gradiente, taxa);
+  683,965,428 ( 4.86%)   252,490,059 ( 4.81%)      0           => barenn.cpp:Barenn::DenseLayer::Backward(std::vector<float, std::allocator<float> >, float) (194,973x)
+      974,865 ( 0.01%)       584,919 ( 0.01%)      .                           auto grad2 = l2.Backward(grad3, taxa);
+1,928,850,757 (13.70%)   750,646,074 (14.29%)      0           => barenn.cpp:Barenn::DenseLayer::Backward(std::vector<float, std::allocator<float> >, float) (194,973x)
+      974,865 ( 0.01%)       389,946 ( 0.01%)      0                           l1.Backward(grad2, taxa);
+7,180,948,814 (51.02%) 2,881,505,990 (54.87%)      0           => barenn.cpp:Barenn::DenseLayer::Backward(std::vector<float, std::allocator<float> >, float) (194,973x)
+            .                      .               .                       }
+          408 ( 0.00%)           102 ( 0.00%)      0                       perdas[epoca] = perda_total / treino.size();
+            .                      .               .                   }
+            1 ( 0.00%)             0               .                   const chrono::duration<double> tempo = chrono::steady_clock::now() - inicio;
+           30 ( 0.00%)            11 ( 0.00%)      4 ( 0.00%)  => ???:0x000000000010b6d0 (1x)
+            .                      .               .           
+            .                      .               .                   // Imprime as métricas e roda a avaliação após encerrar o cronômetro.
+            .                      .               .                   cout << fixed << setprecision(4)
+            8 ( 0.00%)             0               .                        << "TREINO | " << treino.size() << " imagens\n";
+        4,485 ( 0.00%)         1,330 ( 0.00%)    119 ( 0.01%)  => ???:0x000000000010b5e0 (2x)
+           33 ( 0.00%)             .               .                   for (int epoca = 0; epoca < epocas; epoca += 5) {
+           44 ( 0.00%)             0               0                       cout << "Epoca " << setw(2) << epoca + 1 << "/" << epocas
+        9,067 ( 0.00%)         2,372 ( 0.00%)     42 ( 0.00%)  => ???:0x000000000010b7c0 (11x)
+           44 ( 0.00%)             0               .                            << " | perda media " << perdas[epoca] << "\n";
+        4,499 ( 0.00%)         1,155 ( 0.00%)      0           => ???:0x000000000010b7c0 (11x)
+            .                      .               .                   }
+            6 ( 0.00%)             0               0                   cout << "Tempo de treino " << tempo.count() << " s\n";
+          527 ( 0.00%)           150 ( 0.00%)      1 ( 0.00%)  => ???:0x000000000010b5e0 (2x)
+            .                      .               .           
+            .                      .               .                   // Com BARENN_PESOS definido, grava os parâmetros finais para validação.
+            5 ( 0.00%)             0               .                   if (const char* caminho = getenv("BARENN_PESOS")) {
+          784 ( 0.00%)           255 ( 0.00%)     80 ( 0.01%)  => ???:0x000000000010b670 (1x)
+            .                      .               .                       ofstream pesos(caminho, ios::binary);
+            .                      .               .                       l1.Salvar(pesos);
+            .                      .               .                       l2.Salvar(pesos);
+            .                      .               .                       l3.Salvar(pesos);
+            .                      .               .                   }
+            9 ( 0.00%)             4 ( 0.00%)      0                   Barenn::avaliar(l1, l2, l3, teste);
+   33,529,583 ( 0.24%)    10,845,690 ( 0.21%)  8,214 ( 0.90%)  => barenn.cpp:Barenn::avaliar(Barenn::DenseLayer&, Barenn::DenseLayer&, Barenn::DenseLayer&, std::vector<Barenn::Amostra, std::allocator<Barenn::Amostra> > const&) (1x)
+           10 ( 0.00%)             1 ( 0.00%)      1 ( 0.00%)      } catch (const exception& erro) {
+    1,129,144 ( 0.01%)       334,440 ( 0.01%)  9,909 ( 1.08%)  => /usr/include/c++/11/bits/stl_vector.h:std::vector<Barenn::Amostra, std::allocator<Barenn::Amostra> >::~vector() (2x)
+       11,025 ( 0.00%)         3,277 ( 0.00%)      8 ( 0.00%)  => barenn.cpp:Barenn::DenseLayer::~DenseLayer() (3x)
+            .                      .               .                   cerr << "Erro: " << erro.what() << "\n";
+            .                      .               .                   return 1;
+            .                      .               .               }
+           16 ( 0.00%)            10 ( 0.00%)      2 ( 0.00%)  }
+
+--------------------------------------------------------------------------------
+The following files chosen for auto-annotation could not be found:
+--------------------------------------------------------------------------------
+  ./malloc/./malloc/arena.c
+  ./malloc/./malloc/malloc.c
+  ./stdlib/./stdlib/strtod_l.c
+  ./string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S
+  ./string/../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+
+--------------------------------------------------------------------------------
+Ir                      Dr                     D1mr             
+--------------------------------------------------------------------------------
+13,152,232,497 (93.45%) 4,990,281,509 (95.02%) 104,070 (11.39%)  events annotated
+

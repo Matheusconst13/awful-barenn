@@ -2,6 +2,7 @@
 #include <array>
 #include <chrono>
 #include <cmath>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
@@ -91,6 +92,17 @@ public:
             bias[i] -= learning_rate * delta[i];
         }
         return grad_in;
+    }
+
+    // Grava pesos (linha a linha) e vieses em binário para validar a
+    // corretude bit a bit entre versões.
+    void Salvar(ostream& saida) const {
+        for (const auto& row : weights) {
+            saida.write(reinterpret_cast<const char*>(row.data()),
+                        row.size() * sizeof(float));
+        }
+        saida.write(reinterpret_cast<const char*>(bias.data()),
+                    bias.size() * sizeof(float));
     }
 };
 
@@ -300,6 +312,14 @@ int main(int argc, char** argv) {
                  << " | perda media " << perdas[epoca] << "\n";
         }
         cout << "Tempo de treino " << tempo.count() << " s\n";
+
+        // Com BARENN_PESOS definido, grava os parâmetros finais para validação.
+        if (const char* caminho = getenv("BARENN_PESOS")) {
+            ofstream pesos(caminho, ios::binary);
+            l1.Salvar(pesos);
+            l2.Salvar(pesos);
+            l3.Salvar(pesos);
+        }
         Barenn::avaliar(l1, l2, l3, teste);
     } catch (const exception& erro) {
         cerr << "Erro: " << erro.what() << "\n";
