@@ -49,7 +49,7 @@ callgrind: barenn
 clean:
 	rm -f barenn barenn_cuda callgrind.out.barenn
 
-.PHONY: all cuda bench validate bench-cuda validate-cuda callgrind clean experimento-omp
+.PHONY: all cuda bench validate bench-cuda validate-cuda callgrind clean experimento-omp experimento-streams
 
 # Experimento da issue #7: OpenMP dentro de cada amostra (versão escalar v0.1).
 experimentos/omp_intra_amostra: experimentos/omp_intra_amostra.cpp
@@ -58,3 +58,12 @@ experimentos/omp_intra_amostra: experimentos/omp_intra_amostra.cpp
 experimento-omp: experimentos/omp_intra_amostra
 	for t in 1 2 4 8; do echo "threads=$$t"; \
 	  OMP_NUM_THREADS=$$t python3 scripts/bench.py ./$< -n 5 | tail -2; done
+
+# Experimento da issue #13: streams + memória fixada na versão v1.2.
+experimentos/cuda_streams: experimentos/cuda_streams.cu comum.hpp
+	$(NVCC) $(NVCCFLAGS) -Xcompiler "$(CXXFLAGS)" -lgomp -o $@ $<
+
+experimento-streams: experimentos/cuda_streams barenn_cuda
+	./scripts/validate.sh ./experimentos/cuda_streams
+	for b in ./barenn_cuda ./experimentos/cuda_streams; do \
+	  python3 scripts/bench.py $$b -n $(REPS) | tail -2; done
