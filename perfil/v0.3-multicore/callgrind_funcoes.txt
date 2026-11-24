@@ -1,0 +1,36 @@
+--------------------------------------------------------------------------------
+Profile data file '/tmp/tmp.slv5ofbvyn/callgrind.out' (creator: callgrind-3.18.1)
+--------------------------------------------------------------------------------
+I1 cache: 32768 B, 64 B, 8-way associative
+D1 cache: 49152 B, 64 B, 12-way associative
+LL cache: 25165824 B, 64 B, 12-way associative
+Timerange: Basic block 0 - 119825230
+Trigger: Program termination
+Profiled target:  ./barenn (PID 133715, part 1)
+Events recorded:  Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Events shown:     Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Event sort order: Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw
+Thresholds:       99 0 0 0 0 0 0 0 0
+Include dirs:     
+User annotated:   
+Auto-annotation:  off
+
+--------------------------------------------------------------------------------
+Ir                     Dr                   Dw                   I1mr           D1mr             D1mw            ILmr           DLmr           DLmw            
+--------------------------------------------------------------------------------
+1,128,404,670 (100.0%) 266,327,994 (100.0%) 126,512,264 (100.0%) 4,690 (100.0%) 866,987 (100.0%) 88,188 (100.0%) 3,516 (100.0%) 8,305 (100.0%) 58,102 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                   Dr                   Dw                   I1mr         D1mr             D1mw            ILmr         DLmr           DLmw             file:function
+--------------------------------------------------------------------------------
+908,952,422 (80.55%) 225,002,337 (84.48%) 110,035,001 (86.98%) 160 ( 3.41%) 792,188 (91.37%)    475 ( 0.54%) 157 ( 4.47%)     0             310 ( 0.53%)  barenn.cpp:main [barenn]
+ 80,991,036 ( 7.18%)  11,570,295 ( 4.34%)          55 ( 0.00%)  10 ( 0.21%)      77 ( 0.01%)      0            5 ( 0.14%)     .               .           ???:0x00000000000206b0 [/usr/lib/x86_64-linux-gnu/libgomp.so.1.0.0]
+ 51,050,076 ( 4.52%)   7,995,904 ( 3.00%)   8,632,320 ( 6.82%)  32 ( 0.68%)  12,728 ( 1.47%)     96 ( 0.11%)  20 ( 0.57%)     2 ( 0.02%)     45 ( 0.08%)  ???:std::from_chars(char const*, char const*, float&, std::chars_format) [/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.30]
+ 37,641,374 ( 3.34%)   5,377,540 ( 2.02%)         200 ( 0.00%)  10 ( 0.21%)     180 ( 0.02%)      2 ( 0.00%)   7 ( 0.20%)     .               .           ???:0x0000000000020910 [/usr/lib/x86_64-linux-gnu/libgomp.so.1.0.0]
+ 17,523,172 ( 1.55%)   2,585,202 ( 0.97%)   1,489,302 ( 1.18%)  11 ( 0.23%)     234 ( 0.03%) 22,527 (25.54%)   6 ( 0.17%)     1 ( 0.01%)     15 ( 0.03%)  barenn.cpp:Barenn::ler_linha(char const*, char const*, float*, int&) [barenn]
+  5,799,218 ( 0.51%)   2,485,563 ( 0.93%)     828,459 ( 0.65%)   5 ( 0.11%)      20 ( 0.00%)      0            3 ( 0.09%)     .               .           /usr/include/c++/11/streambuf:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  5,798,533 ( 0.51%)   1,656,735 ( 0.62%)     828,417 ( 0.65%)   8 ( 0.17%)       0          12,928 (14.66%)   4 ( 0.11%)     0          11,441 (19.69%)  /usr/include/c++/11/bits/basic_string.tcc:Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)
+  5,074,874 ( 0.45%)   2,899,928 ( 1.09%)           0            4 ( 0.09%)      37 ( 0.00%)      0            2 ( 0.06%)     1 ( 0.01%)      .           ./ctype/./ctype/ctype.c:isspace [/usr/lib/x86_64-linux-gnu/libc.so.6]
+  2,422,173 ( 0.21%)     877,874 ( 0.33%)      52,318 ( 0.04%)  55 ( 1.17%)   7,351 ( 0.85%)     14 ( 0.02%)  55 ( 1.56%)     .               .           barenn.cpp:Barenn::avaliar(Barenn::Rede&, Barenn::Conjunto const&) [barenn]
+  1,949,730 ( 0.17%)     389,946 ( 0.15%)   1,364,811 ( 1.08%)   1 ( 0.02%)       0               3 ( 0.00%)   1 ( 0.03%)     .               .           /usr/include/x86_64-linux-gnu/bits/string_fortified.h:main
+

@@ -1,0 +1,15 @@
+    68.41%  [.] main                                                                                                       -      -
+    14.09%  [.] 0x0000000000020600                                                                                         -      -
+     6.98%  [.] std::from_chars(char const*, char const*, float&, std::chars_format)                                       -      -
+     1.95%  [.] Barenn::ler_linha(char const*, char const*, float*, int&)                                                  -      -
+     1.69%  [.] Barenn::ler_dados(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)  -      -
+     1.18%  [.] 0x0000000000020602                                                                                         -      -
+     1.15%  [.] isspace                                                                                                    -      -
+     1.05%  [.] 0x00000000000207b8                                                                                         -      -
+     0.47%  [k] 0xffffffffb502d2ee                                                                                         -      -
+     0.41%  [.] _dl_lookup_symbol_x                                                                                        -      -
+     0.27%  [.] Barenn::avaliar(Barenn::Rede&, Barenn::Conjunto const&)                                                    -      -
+     0.26%  [k] 0xffffffffb4fb2bc7                                                                                         -      -
+     0.26%  [k] 0xffffffffb41aa2f0                                                                                         -      -
+     0.26%  [k] 0xffffffffb520128c                                                                                         -      -
+     0.23%  [.] do_lookup_x                                                                                                -      -
