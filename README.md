@@ -16,7 +16,6 @@ Medida em uma única sessão: cada tag compilada a partir de um checkout isolado
 | CUDA | [`v1.1-persistente`](https://github.com/Matheusconst13/awful-barenn/tree/v1.1-persistente) | 0,331 s ± 0,000 | 2,6x | 0,506 s | bit a bit |
 | **CUDA otimizado** | [`v1.2-warp`](https://github.com/Matheusconst13/awful-barenn/tree/v1.2-warp) | **0,171 s ± 0,000** | **5,0x** | 0,340 s | bit a bit |
 
-Ambiente: Intel i7-11800H (8C/16T, até 4,6 GHz), 16 GB, NVIDIA GeForce RTX 3060 Laptop (GA106, sm_86, 30 SMs, 6 GB), Ubuntu 22.04 (kernel 6.8), GCC 11.4, CUDA 12.9, driver 580.178. Entrada: `optdigits.tra` / `optdigits.tes`. Flags: CPU `-O3 -march=x86-64-v3 -ffp-contract=off -fopenmp`; GPU `nvcc -O3 -arch=sm_86 --fmad=false`. Na GPU o "total" inclui ~0,15 s de criação do contexto CUDA.
 
 ## Índice (issue → PR → tag)
 
